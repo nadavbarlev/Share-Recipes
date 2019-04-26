@@ -15,7 +15,7 @@ public class ServiceGenerator {
 
     /* Recipe Service */
     private static IRecipeService recipeService = retrofit.create(IRecipeService.class);
-    public IRecipeService getRecipeService() {
+    public static IRecipeService getRecipeService() {
         return recipeService;
     }
 

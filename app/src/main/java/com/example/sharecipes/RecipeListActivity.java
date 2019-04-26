@@ -1,9 +1,10 @@
 package com.example.sharecipes;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class RecipeListActivity extends BaseActivity {
+
+    private static final String TAG = "RecipeListActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

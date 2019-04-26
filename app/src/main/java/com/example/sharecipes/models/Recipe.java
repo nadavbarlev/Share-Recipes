@@ -38,19 +38,53 @@ public class Recipe implements Parcelable {
     }
 
     /* Getter and Setter */
-    public String getRecipe_id() { return recipe_id; }
-    public String getTitle() { return title; }
-    public String getPublisher() { return publisher; }
-    public String getImage_url() { return image_url; }
-    public String[] getIngredients() { return ingredients; }
-    public float getSocial_rank() { return social_rank; }
+    public String getRecipe_id() {
+        return recipe_id;
+    }
 
-    public void setRecipe_id(String recipe_id) {  this.recipe_id = recipe_id; }
-    public void setTitle(String title) { this.title = title; }
-    public void setPublisher(String publisher) { this.publisher = publisher; }
-    public void setIngredients(String[] ingredients) { this.ingredients = ingredients; }
-    public void setSocial_rank(float social_rank) { this.social_rank = social_rank; }
-    public void setImage_url(String image_url) { this.image_url = image_url; }
+    public String getTitle() {
+        return title;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public String[] getIngredients() {
+        return ingredients;
+    }
+
+    public float getSocial_rank() {
+        return social_rank;
+    }
+
+    public void setRecipe_id(String recipe_id) {
+        this.recipe_id = recipe_id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public void setIngredients(String[] ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public void setSocial_rank(float social_rank) {
+        this.social_rank = social_rank;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
+    }
 
     /* Override Methods */
     @Override
@@ -93,6 +127,4 @@ public class Recipe implements Parcelable {
         dest.writeFloat(social_rank);
         dest.writeString(image_url);
     }
-
-
 }
