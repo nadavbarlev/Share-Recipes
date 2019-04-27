@@ -1,4 +1,4 @@
-package com.example.sharecipes.models;
+package com.example.sharecipes.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,6 +1,6 @@
-package com.example.sharecipes.services.responses;
+package com.example.sharecipes.service.Responses;
 
-import com.example.sharecipes.models.Recipe;
+import com.example.sharecipes.model.Recipe;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

@@ -1,6 +1,6 @@
-package com.example.sharecipes.services;
+package com.example.sharecipes.service;
 
-import com.example.sharecipes.utils.Constants;
+import com.example.sharecipes.util.Constants;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;

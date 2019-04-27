@@ -1,4 +1,4 @@
-package com.example.sharecipes.utils;
+package com.example.sharecipes.util;
 
 public class Constants {
 

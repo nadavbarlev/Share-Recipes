@@ -1,7 +1,7 @@
-package com.example.sharecipes.services;
+package com.example.sharecipes.service;
 
-import com.example.sharecipes.services.responses.RecipeResponse;
-import com.example.sharecipes.services.responses.RecipeSearchResponse;
+import com.example.sharecipes.service.Responses.RecipeResponse;
+import com.example.sharecipes.service.Responses.RecipeSearchResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
