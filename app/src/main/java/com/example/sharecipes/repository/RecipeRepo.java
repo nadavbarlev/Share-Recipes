@@ -31,4 +31,8 @@ public class RecipeRepo {
     public LiveData<List<Recipe>> getRecipes() {
         return mRecipeServiceClient.getRecipes();
     }
+
+    public void searchRecipe(String query, int page) {
+        mRecipeServiceClient.searchRecipe(query, page);
+    }
 }

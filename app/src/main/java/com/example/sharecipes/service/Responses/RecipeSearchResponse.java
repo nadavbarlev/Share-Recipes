@@ -4,6 +4,7 @@ import com.example.sharecipes.model.Recipe;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import java.util.Arrays;
+import java.util.List;
 
 public class RecipeSearchResponse {
 
@@ -13,14 +14,14 @@ public class RecipeSearchResponse {
 
     @SerializedName("recipes")
     @Expose
-    private Recipe[] recipes;
+    private List<Recipe> recipes;
 
     /* Getter */
     public int getCount() {
         return count;
     }
 
-    public Recipe[] getRecipes() {
+    public List<Recipe> getRecipes() {
         return recipes;
     }
 
@@ -29,7 +30,7 @@ public class RecipeSearchResponse {
     public String toString() {
         return "RecipeSearchResponse{" +
                 "count=" + count +
-                ", recipes=" + Arrays.toString(recipes) +
+                ", recipes=" + recipes +
                 '}';
     }
 }

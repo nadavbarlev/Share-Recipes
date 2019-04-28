@@ -4,6 +4,8 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.view.View;
 
 import com.example.sharecipes.model.Recipe;
 import com.example.sharecipes.viewmodel.RecipeListVM;
@@ -27,6 +29,15 @@ public class RecipeListActivity extends BaseActivity {
         mRecipeListVM = ViewModelProviders.of(this).get(RecipeListVM.class);
 
         subscribeVM();
+
+        findViewById(R.id.search_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                searchRecipe("milk", 1);
+
+            }
+        });
     }
 
     /* Methods */
@@ -36,8 +47,18 @@ public class RecipeListActivity extends BaseActivity {
             @Override
             public void onChanged(@Nullable List<Recipe> recipes) {
 
+                if (recipes == null) { return; }
+
+                for(Recipe recipe: recipes) {
+                    Log.d(TAG, "onChanged: " + recipe.getTitle());
+                }
+
             }
         });
 
+    }
+
+    public void searchRecipe(String query, int page) {
+        mRecipeListVM.searchRecipe(query, page);
     }
 }
