@@ -58,12 +58,11 @@ public class RecipeServiceClient {
         // Execute Runnable
         final Future handler = AppExecutors.getInstance().networkIO().submit(mRetrieveRecipeRunnable);
 
-        /*
         AppExecutors.getInstance().networkIO().schedule(new Runnable() {
             @Override
             public void run() { handler.cancel(true); }
         }, NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
-        */
+
     }
 
     /* Runnable classes */
