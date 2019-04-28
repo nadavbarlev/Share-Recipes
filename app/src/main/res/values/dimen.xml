@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="recipe_card_image_height">250dp</dimen>
+    <dimen name="recipe_card_title_text_size">20sp</dimen>
+    <dimen name="recipe_card_publisher_text_size">16sp</dimen>
+    <dimen name="recipe_card_score_text_size">16sp</dimen>
+    <dimen name="recipe_recycler_loading_view_height">80dp</dimen>
+</resources>
