@@ -15,11 +15,12 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.example.sharecipes.util.Constants.API_KEY_1;
+import static com.example.sharecipes.util.Constants.API_KEY_2;
 import static com.example.sharecipes.util.Constants.NETWORK_TIMEOUT;
-import static com.example.sharecipes.util.Constants.API_KEY;
+
 
 public class RecipeServiceClient {
 
@@ -92,7 +93,7 @@ public class RecipeServiceClient {
 
                 // Execute Call Search Recipe Statement
                 Call<RecipeSearchResponse> recipeSearchResponseCall =
-                        ServiceGenerator.getRecipeService().searchRecipe(API_KEY, mQuery, String.valueOf(mPage));
+                        ServiceGenerator.getRecipeService().searchRecipe(API_KEY_2, mQuery, String.valueOf(mPage));
                 Response response = recipeSearchResponseCall.execute();
 
                 // Success Code

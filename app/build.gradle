@@ -52,4 +52,8 @@ dependencies {
 
     /* Design Support */
     implementation "com.android.support:design:$support_version"
+
+    /* Circle Image View */
+    def circle_imageview_version = "3.0.0"
+    implementation "de.hdodenhof:circleimageview:$circle_imageview_version"
 }
