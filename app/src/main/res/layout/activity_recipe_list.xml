@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+
+<!-- CoordinatorLayout - for custom toolbar behavior, collapse -->
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,9 +9,33 @@
     android:layout_height="match_parent"
     tools:context=".RecipeListActivity">
 
+    <!-- AppBarLayout - for custom toolbar behavior, collapse.
+         Most be the first child -->
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/toolbar"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <android.support.v7.widget.SearchView
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:id="@+id/searchView"
+                app:queryHint="@string/searchview_hint">
+            </android.support.v7.widget.SearchView>
+
+        </Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recyclerview" />
+        android:id="@+id/recyclerview"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-</android.support.constraint.ConstraintLayout>
+</android.support.design.widget.CoordinatorLayout>

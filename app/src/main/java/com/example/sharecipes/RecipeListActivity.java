@@ -6,10 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
-
+import android.support.v7.widget.SearchView;
 import com.example.sharecipes.adapter.RecipeRecyclerAdapter;
 import com.example.sharecipes.adapter.RecipeViewHolder;
 import com.example.sharecipes.model.Recipe;
@@ -28,6 +25,7 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
 
     /* Views */
     private RecyclerView mRecyclerView;
+    private SearchView mSearchView;
 
     /* LifeCycle */
     @Override
@@ -35,37 +33,49 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list);
 
-        /* RecyclerView Init */
-        mRecyclerView = findViewById(R.id.recyclerview);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new RecipeRecyclerAdapter(this);
-        mRecyclerView.setAdapter(mAdapter);
+        /* Setup Components */
+        setupSearchView();
+        setupRecyclerView();
 
-        /* ViewModel */
-        mRecipeListVM = ViewModelProviders.of(this).get(RecipeListVM.class);
-
-        subscribeVM();
-
-        searchRecipe("milk", 1);
+        /* Setup Members */
+        setupViewModel();
     }
 
     /* Methods */
-    private void subscribeVM() {
-
+    private void setupViewModel() {
+        mRecipeListVM = ViewModelProviders.of(this).get(RecipeListVM.class);
         mRecipeListVM.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(@Nullable List<Recipe> recipes) {
-
                 if (recipes == null) { return; }
                 mAdapter.setRecipes(recipes);
             }
         });
     }
 
-    public void searchRecipe(String query, int page) {
-        mRecipeListVM.searchRecipe(query, page);
+    private void setupRecyclerView() {
+        mRecyclerView = findViewById(R.id.recyclerview);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new RecipeRecyclerAdapter(this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
+    private void setupSearchView() {
+        mSearchView = findViewById(R.id.searchView);
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                mRecipeListVM.searchRecipe(s, 1);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) { return false; }
+        });
+    }
+
+
+    /* Implement RecipeViewHolder.RecipeViewHolderListener */
     @Override
     public void onRecipeClicked(int position) {
 

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Sharecipes</string>
+
+
+    <!-- Recipe List Activity -->
+    <string name="searchview_hint">chicken breast...</string>
 </resources>

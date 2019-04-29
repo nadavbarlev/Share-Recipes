@@ -4,6 +4,8 @@
       <w>cardview</w>
       <w>imageview</w>
       <w>mvvm</w>
+      <w>recyclerview</w>
+      <w>searchview</w>
       <w>textview</w>
     </words>
   </dictionary>

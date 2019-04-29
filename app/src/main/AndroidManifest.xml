@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">  <!-- Network Security for Http on API 27 and lower -->
+        android:usesCleartextTraffic="true">  <!-- Network Security for Http on API 28 and Upper -->
 
         <!-- Activities -->
         <activity android:name=".RecipeListActivity">
@@ -21,7 +21,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        
+
     </application>
 
 </manifest>
