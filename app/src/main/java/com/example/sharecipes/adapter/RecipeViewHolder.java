@@ -17,10 +17,10 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder implements View.On
     AppCompatImageView imageviewRecipe;
 
     /* Data Members */
-    RecipeViewHolderListener listener;
+    RecipeCategoryViewHolderListener listener;
 
     /* Constructor */
-    public RecipeViewHolder(@NonNull View itemView, RecipeViewHolderListener listener) {
+    public RecipeViewHolder(@NonNull View itemView, RecipeCategoryViewHolderListener listener) {
         super(itemView);
 
         /* Views */
@@ -39,7 +39,7 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder implements View.On
     }
 
 
-    public interface RecipeViewHolderListener {
+    public interface RecipeCategoryViewHolderListener {
         void onRecipeClicked(int position);
         void onCategoryClicked(String category);
     }

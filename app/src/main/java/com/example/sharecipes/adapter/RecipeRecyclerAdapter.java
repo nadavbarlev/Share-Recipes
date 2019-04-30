@@ -1,5 +1,6 @@
 package com.example.sharecipes.adapter;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.sharecipes.R;
 import com.example.sharecipes.model.Recipe;
+import com.example.sharecipes.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,14 +21,15 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     /* Constants */
     private static final int RECIPE_TYPE = 1;
     private static final int LOADING_TYPE = 2;
+    private static final int CATEGORY_TYPE = 3;
 
     /* Data Members */
     public int adapterType = 0;
     private List<Recipe> mRecipes;
-    private RecipeViewHolder.RecipeViewHolderListener mListener;
+    private RecipeViewHolder.RecipeCategoryViewHolderListener mListener;
 
     /* Constructor */
-    public RecipeRecyclerAdapter(RecipeViewHolder.RecipeViewHolderListener listener) {
+    public RecipeRecyclerAdapter(RecipeViewHolder.RecipeCategoryViewHolderListener listener) {
         this.mListener = listener;
     }
 
@@ -41,6 +44,9 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             case LOADING_TYPE:
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_loading_list_item, viewGroup, false);
                 return new LoadingViewHolder(view);
+            case CATEGORY_TYPE:
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_category_list_item, viewGroup, false);
+                return new CategoryViewHolder(view, mListener);
             default:
                 view = LayoutInflater.from(viewGroup.getContext()).inflate (R.layout.layout_recipe_list_item, viewGroup, false);
                 return new RecipeViewHolder(view, mListener);
@@ -50,6 +56,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
 
+        /* Recipes Section */
         if (getItemViewType(0) == RECIPE_TYPE) {
             final Recipe currRecipe = mRecipes.get(i);
             ((RecipeViewHolder)viewHolder).textviewRecipeTitle.setText(currRecipe.getTitle());
@@ -62,6 +69,17 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     .load(currRecipe.getImage_url())
                     .into(((RecipeViewHolder)viewHolder).imageviewRecipe);
         }
+
+        /* Category Section */
+        else if (getItemViewType(0) == CATEGORY_TYPE) {
+            final Recipe currRecipe = mRecipes.get(i);
+            RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_launcher_background);
+            Glide.with(viewHolder.itemView.getContext())
+                    .setDefaultRequestOptions(requestOptions)
+                    .load(Uri.parse(currRecipe.getImage_url()))
+                    .into(((CategoryViewHolder)viewHolder).imageViewCategory);
+            ((CategoryViewHolder)viewHolder).textviewCategory.setText(currRecipe.getTitle());
+        }
     }
 
     @Override
@@ -71,6 +89,8 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 return mRecipes.size();
             case LOADING_TYPE:
                 return 1;
+            case CATEGORY_TYPE:
+                return Constants.DEFAULT_SEARCH_CATEGORIES.length;
             default:
                 return 0;
         }
@@ -87,7 +107,12 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         setAdapterType(RECIPE_TYPE);
     }
 
-    public void load() {
+    public void setCategories(List<Recipe> recipes) {
+        this.mRecipes = recipes;
+        setAdapterType(CATEGORY_TYPE);
+    }
+
+    public void displayProgress() {
         if (getItemViewType(0) != LOADING_TYPE) {
             setAdapterType(LOADING_TYPE);
         }

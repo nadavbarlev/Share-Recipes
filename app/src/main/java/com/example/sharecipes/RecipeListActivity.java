@@ -14,7 +14,7 @@ import com.example.sharecipes.viewmodel.RecipeListVM;
 
 import java.util.List;
 
-public class RecipeListActivity extends BaseActivity implements RecipeViewHolder.RecipeViewHolderListener {
+public class RecipeListActivity extends BaseActivity implements RecipeViewHolder.RecipeCategoryViewHolderListener {
 
     /* Constants */
     private static final String TAG = "RecipeListActivity";
@@ -39,6 +39,10 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
 
         /* Setup Members */
         setupViewModel();
+
+        if (!mRecipeListVM.isRecipesDisplay()) {
+            mAdapter.setCategories(mRecipeListVM.getCategories());
+        }
     }
 
     /* Methods */
@@ -65,7 +69,7 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                mAdapter.load();
+                mAdapter.displayProgress();
                 mRecipeListVM.searchRecipe(s, 1);
                 return false;
             }
@@ -84,6 +88,7 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
 
     @Override
     public void onCategoryClicked(String category) {
-
+        mAdapter.displayProgress();
+        mRecipeListVM.searchRecipe(category, 1);
     }
 }
