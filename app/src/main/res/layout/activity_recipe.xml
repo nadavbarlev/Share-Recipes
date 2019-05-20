@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/scrollViewRecipeDetails"
+    android:visibility="visible">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/recipe_card_image_height"
+            android:id="@+id/imageView_recipe"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/ic_launcher_background"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView_recipe_title"
+            android:layout_below="@id/imageView_recipe"
+            android:textSize="@dimen/recipe_card_title_text_size"
+            android:textColor="@color/black"
+            android:padding="7dp"
+            tools:text="Some Recipe Text" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout_details_container"
+            android:weightSum="100"
+            android:orientation="horizontal"
+            android:layout_below="@id/textView_recipe_title"
+            android:padding="7dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView_ingredients_title"
+                android:layout_weight="90"
+                android:textSize="@dimen/recipe_card_publisher_text_size"
+                android:textStyle="bold"
+                android:text="Ingredients" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView_recipe_score"
+                android:layout_weight="10"
+                android:gravity="center"
+                android:textSize="@dimen/recipe_card_publisher_text_size"
+                android:textStyle="bold"
+                android:textColor="@color/red"
+                tools:text="100" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout_ingredients_container"
+            android:orientation="vertical"
+            android:layout_below="@id/linearLayout_details_container"
+            android:padding="7dp">
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</ScrollView>

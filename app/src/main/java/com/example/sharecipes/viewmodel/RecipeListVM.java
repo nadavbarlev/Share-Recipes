@@ -47,6 +47,11 @@ public class RecipeListVM extends ViewModel {
         mRecipeRepo.searchRecipe(query, page);
     }
 
+    public void searchNextPage() {
+        if (!mIsRecipesDisplay) { return; }
+        mRecipeRepo.searchNextPage();
+    }
+
     public void setIsRecipesDisplay(boolean isDisplay) {
         mIsRecipesDisplay = isDisplay;
     }

@@ -2,14 +2,21 @@ package com.example.sharecipes;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+
 import com.example.sharecipes.adapter.RecipeRecyclerAdapter;
 import com.example.sharecipes.adapter.RecipeViewHolder;
 import com.example.sharecipes.model.Recipe;
+import com.example.sharecipes.util.VerticalSpacingItemDecorator;
 import com.example.sharecipes.viewmodel.RecipeListVM;
 
 import java.util.List;
@@ -40,8 +47,12 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
         /* Setup Members */
         setupViewModel();
 
+        /* Setup Toolbar */
+        setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
+
         if (!mRecipeListVM.isRecipesDisplay()) {
             mAdapter.setCategories(mRecipeListVM.getCategories());
+            mRecipeListVM.setIsRecipesDisplay(false);
         }
     }
 
@@ -53,15 +64,25 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
             public void onChanged(@Nullable List<Recipe> recipes) {
                 if (recipes == null) { return; }
                 mAdapter.setRecipes(recipes);
+                mRecipeListVM.setIsRecipesDisplay(true);
             }
         });
     }
 
     private void setupRecyclerView() {
         mRecyclerView = findViewById(R.id.recyclerview);
+        mRecyclerView.addItemDecoration(new VerticalSpacingItemDecorator(30));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new RecipeRecyclerAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (!mRecyclerView.canScrollVertically(1)) {
+                    mRecipeListVM.searchNextPage();
+                }
+            }
+        });
     }
 
     private void setupSearchView() {
@@ -69,7 +90,7 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-                mAdapter.displayProgress();
+                mAdapter.setProgress();
                 mRecipeListVM.searchRecipe(s, 1);
                 return false;
             }
@@ -79,16 +100,43 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
         });
     }
 
+    /* Override Methods */
+    @Override
+    public void onBackPressed() {
+        if (mRecipeListVM.isRecipesDisplay()) {
+            mRecipeListVM.setIsRecipesDisplay(false);
+            mAdapter.setCategories(mRecipeListVM.getCategories());
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.recipe_search_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_categories) {
+            mRecipeListVM.setIsRecipesDisplay(false);
+            mAdapter.setCategories(mRecipeListVM.getCategories());
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     /* Implement RecipeViewHolder.RecipeViewHolderListener */
     @Override
     public void onRecipeClicked(int position) {
-
+        Intent intent = new Intent(this, RecipeActivity.class);
+        intent.putExtra("recipe", mAdapter.getSelectedRecipe(position));
+        startActivity(intent);
     }
 
     @Override
     public void onCategoryClicked(String category) {
-        mAdapter.displayProgress();
+        mAdapter.setProgress();
         mRecipeListVM.searchRecipe(category, 1);
     }
 }

@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.util.Log;
 
 import com.example.sharecipes.model.Recipe;
+import com.example.sharecipes.service.Responses.RecipeResponse;
 import com.example.sharecipes.service.Responses.RecipeSearchResponse;
 import com.example.sharecipes.util.AppExecutors;
 
@@ -29,12 +30,16 @@ public class RecipeServiceClient {
 
     /* Data Members */
     private static RecipeServiceClient instance = null;
+
     private MutableLiveData<List<Recipe>> mRecipes;
+    private RetrieveRecipesRunnable mRetrieveRecipesRunnable;
+    private MutableLiveData<Recipe> mRecipe;
     private RetrieveRecipeRunnable mRetrieveRecipeRunnable;
 
     /* Constructor */
     private RecipeServiceClient() {
         mRecipes = new MutableLiveData<>();
+        mRecipe = new MutableLiveData<>();
     }
 
     /* Singleton */
@@ -45,7 +50,7 @@ public class RecipeServiceClient {
         return instance;
     }
 
-    /* Methods */
+    /* Methods Search Recipes */
     public LiveData<List<Recipe>> getRecipes() {
         return mRecipes;
     }
@@ -53,11 +58,11 @@ public class RecipeServiceClient {
     public void searchRecipe(String query, int page) {
 
         // Create new instance
-        if (mRetrieveRecipeRunnable != null) { mRetrieveRecipeRunnable = null; }
-        mRetrieveRecipeRunnable = new RetrieveRecipeRunnable(query, page);
+        if (mRetrieveRecipesRunnable != null) { mRetrieveRecipesRunnable = null; }
+        mRetrieveRecipesRunnable = new RetrieveRecipesRunnable(query, page);
 
         // Execute Runnable
-        final Future handler = AppExecutors.getInstance().networkIO().submit(mRetrieveRecipeRunnable);
+        final Future handler = AppExecutors.getInstance().networkIO().submit(mRetrieveRecipesRunnable);
 
         AppExecutors.getInstance().networkIO().schedule(new Runnable() {
             @Override
@@ -66,11 +71,29 @@ public class RecipeServiceClient {
 
     }
 
+    /* Methods Get Recipe */
+    public LiveData<Recipe> getRecipe() { return mRecipe; }
+
+    public void searchRecipeBy(String id) {
+
+        // Create new instance
+        if (mRetrieveRecipeRunnable != null) { mRetrieveRecipeRunnable = null; }
+        mRetrieveRecipeRunnable = new RetrieveRecipeRunnable(id);
+
+        // Execute Runnable
+        final Future handler = AppExecutors.getInstance().networkIO().submit(mRetrieveRecipesRunnable);
+
+        AppExecutors.getInstance().networkIO().schedule(new Runnable() {
+            @Override
+            public void run() { handler.cancel(true); }
+        }, NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
+    }
+
     /* Runnable classes */
-    private class RetrieveRecipeRunnable implements Runnable {
+    private class RetrieveRecipesRunnable implements Runnable {
 
         /* Constants */
-        private static final String TAG = "RetrieveRecipeRunnable";
+        private static final String TAG = "RetrieveRecipesRunnable";
 
         /* Data Members */
         private String mQuery;
@@ -78,7 +101,7 @@ public class RecipeServiceClient {
         private boolean mIsCancelRequest;
 
         /* Constructor */
-        public RetrieveRecipeRunnable(String query, int page) {
+        public RetrieveRecipesRunnable(String query, int page) {
             this.mQuery = query;
             this.mPage = page;
             this.mIsCancelRequest = false;
@@ -93,7 +116,7 @@ public class RecipeServiceClient {
 
                 // Execute Call Search Recipe Statement
                 Call<RecipeSearchResponse> recipeSearchResponseCall =
-                        ServiceGenerator.getRecipeService().searchRecipe(API_KEY_2, mQuery, String.valueOf(mPage));
+                        ServiceGenerator.getRecipeService().searchRecipe(API_KEY_1, mQuery, String.valueOf(mPage));
                 Response response = recipeSearchResponseCall.execute();
 
                 // Success Code
@@ -117,6 +140,58 @@ public class RecipeServiceClient {
             } catch (IOException e) {
                 e.printStackTrace();
                 mRecipes.postValue(null);
+            }
+
+        }
+
+        /* Methods */
+        public void setCancelRequest(boolean isCancelRequest) {
+            mIsCancelRequest = isCancelRequest;
+        }
+    }
+
+    private class RetrieveRecipeRunnable implements Runnable {
+
+        /* Constants */
+        private static final String TAG = "RetrieveRecipeRunnable";
+
+        /* Data Members */
+        private String mID;
+        private boolean mIsCancelRequest;
+
+        /* Constructor */
+        public RetrieveRecipeRunnable(String id) {
+            this.mIsCancelRequest = false;
+            this.mID = id;
+        }
+
+        @Override
+        public void run() {
+
+            if (mIsCancelRequest) { return; }
+
+            try {
+
+                // Execute Call Search Recipe Statement
+                Call<RecipeResponse> recipeResponseCall =
+                        ServiceGenerator.getRecipeService().getRecipe(API_KEY_1, mID);
+                Response response = recipeResponseCall.execute();
+
+                // Success Code
+                if (response.code() == 200) {
+                    Recipe recipe = ((RecipeResponse)response.body()).getRecipe();
+                    mRecipe.postValue(recipe);
+                }
+
+                // Error Code
+                else {
+                    Log.e(TAG, "run: " + response.errorBody().string());
+                    mRecipe.postValue(null);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                mRecipe.postValue(null);
             }
 
         }

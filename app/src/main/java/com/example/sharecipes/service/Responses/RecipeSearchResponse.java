@@ -28,7 +28,7 @@ public class RecipeSearchResponse {
     /* Override Methods */
     @Override
     public String toString() {
-        return "RecipeSearchResponse{" +
+        return "RecipeSearchResponse {" +
                 "count=" + count +
                 ", recipes=" + recipes +
                 '}';

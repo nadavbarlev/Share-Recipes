@@ -112,10 +112,17 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         setAdapterType(CATEGORY_TYPE);
     }
 
-    public void displayProgress() {
+    public void setProgress() {
         if (getItemViewType(0) != LOADING_TYPE) {
             setAdapterType(LOADING_TYPE);
         }
+    }
+
+    public Recipe getSelectedRecipe(int position) {
+        if (mRecipes != null && mRecipes.size() > 0) {
+            return mRecipes.get(position);
+        }
+        return null;
     }
 
     private void setAdapterType(int type) {

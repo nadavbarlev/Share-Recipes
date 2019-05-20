@@ -13,6 +13,8 @@ public class RecipeRepo {
     /* Data Members */
     private static RecipeRepo instance = null;
     private RecipeServiceClient mRecipeServiceClient;
+    private String mQuery;
+    private int mPage;
 
     /* Constructor */
     private RecipeRepo() {
@@ -32,7 +34,21 @@ public class RecipeRepo {
         return mRecipeServiceClient.getRecipes();
     }
 
+    public LiveData<Recipe> getRecipe() {
+        return mRecipeServiceClient.getRecipe();
+    }
+
     public void searchRecipe(String query, int page) {
+        mQuery = query;
+        mPage = page;
         mRecipeServiceClient.searchRecipe(query, page);
+    }
+
+    public void searchRecipeBy(String id) {
+        mRecipeServiceClient.searchRecipeBy(id);
+    }
+
+    public void searchNextPage() {
+        searchRecipe(mQuery, mPage + 1);
     }
 }
