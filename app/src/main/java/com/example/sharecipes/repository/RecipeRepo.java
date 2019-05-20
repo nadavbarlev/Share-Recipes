@@ -38,6 +38,10 @@ public class RecipeRepo {
         return mRecipeServiceClient.getRecipe();
     }
 
+    public LiveData<Boolean> getIsNetworkTimeout() {
+        return mRecipeServiceClient.getIsNetworkTimeout();
+    }
+
     public void searchRecipe(String query, int page) {
         mQuery = query;
         mPage = page;

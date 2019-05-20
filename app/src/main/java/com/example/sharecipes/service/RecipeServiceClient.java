@@ -18,7 +18,6 @@ import java.util.concurrent.TimeUnit;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import static com.example.sharecipes.util.Constants.API_KEY_1;
 import static com.example.sharecipes.util.Constants.API_KEY_2;
 import static com.example.sharecipes.util.Constants.NETWORK_TIMEOUT;
 
@@ -35,11 +34,13 @@ public class RecipeServiceClient {
     private RetrieveRecipesRunnable mRetrieveRecipesRunnable;
     private MutableLiveData<Recipe> mRecipe;
     private RetrieveRecipeRunnable mRetrieveRecipeRunnable;
+    private MutableLiveData<Boolean> mIsNetworkTimeout;
 
     /* Constructor */
     private RecipeServiceClient() {
         mRecipes = new MutableLiveData<>();
         mRecipe = new MutableLiveData<>();
+        mIsNetworkTimeout = new MutableLiveData<>();
     }
 
     /* Singleton */
@@ -50,10 +51,12 @@ public class RecipeServiceClient {
         return instance;
     }
 
-    /* Methods Search Recipes */
+    /* Methods */
     public LiveData<List<Recipe>> getRecipes() {
         return mRecipes;
     }
+    public LiveData<Recipe> getRecipe() { return mRecipe; }
+    public LiveData<Boolean> getIsNetworkTimeout() { return mIsNetworkTimeout; }
 
     public void searchRecipe(String query, int page) {
 
@@ -71,9 +74,6 @@ public class RecipeServiceClient {
 
     }
 
-    /* Methods Get Recipe */
-    public LiveData<Recipe> getRecipe() { return mRecipe; }
-
     public void searchRecipeBy(String id) {
 
         // Create new instance
@@ -81,11 +81,15 @@ public class RecipeServiceClient {
         mRetrieveRecipeRunnable = new RetrieveRecipeRunnable(id);
 
         // Execute Runnable
-        final Future handler = AppExecutors.getInstance().networkIO().submit(mRetrieveRecipesRunnable);
+        final Future handler = AppExecutors.getInstance().networkIO().submit(mRetrieveRecipeRunnable);
 
+        mIsNetworkTimeout.setValue(false);
         AppExecutors.getInstance().networkIO().schedule(new Runnable() {
             @Override
-            public void run() { handler.cancel(true); }
+            public void run() {
+                handler.cancel(true);
+                mIsNetworkTimeout.postValue(true);
+            }
         }, NETWORK_TIMEOUT, TimeUnit.MILLISECONDS);
     }
 
@@ -116,7 +120,7 @@ public class RecipeServiceClient {
 
                 // Execute Call Search Recipe Statement
                 Call<RecipeSearchResponse> recipeSearchResponseCall =
-                        ServiceGenerator.getRecipeService().searchRecipe(API_KEY_1, mQuery, String.valueOf(mPage));
+                        ServiceGenerator.getRecipeService().searchRecipe(API_KEY_2, mQuery, String.valueOf(mPage));
                 Response response = recipeSearchResponseCall.execute();
 
                 // Success Code
@@ -174,7 +178,7 @@ public class RecipeServiceClient {
 
                 // Execute Call Search Recipe Statement
                 Call<RecipeResponse> recipeResponseCall =
-                        ServiceGenerator.getRecipeService().getRecipe(API_KEY_1, mID);
+                        ServiceGenerator.getRecipeService().getRecipe(API_KEY_2, mID);
                 Response response = recipeResponseCall.execute();
 
                 // Success Code

@@ -6,12 +6,14 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
+import com.example.sharecipes.util.HorizontalDottedProgress;
+
 public abstract class BaseActivity extends AppCompatActivity {
 
     /* Data Members */
-    private ConstraintLayout mConstraintLayout;
-    private FrameLayout      mFrameLayout;
-    private ProgressBar      mProgressBar;
+    private ConstraintLayout        mConstraintLayout;
+    private FrameLayout             mFrameLayout;
+    private HorizontalDottedProgress mProgressBar;
 
     /* Override Methods*/
     @Override
