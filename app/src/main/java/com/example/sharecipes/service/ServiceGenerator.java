@@ -19,4 +19,6 @@ public class ServiceGenerator {
         return recipeService;
     }
 
+    /* Another Service */
+
 }

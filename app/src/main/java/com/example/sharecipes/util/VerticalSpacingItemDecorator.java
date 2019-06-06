@@ -16,7 +16,6 @@ public class VerticalSpacingItemDecorator extends RecyclerView.ItemDecoration {
     }
 
     /* Override RecyclerView.ItemDecoration */
-
     @Override
     public void getItemOffsets(@NonNull Rect outRect,
                                @NonNull View view,

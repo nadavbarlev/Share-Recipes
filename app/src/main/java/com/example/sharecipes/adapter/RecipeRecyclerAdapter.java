@@ -11,8 +11,6 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.sharecipes.R;
 import com.example.sharecipes.model.Recipe;
 import com.example.sharecipes.util.Constants;
-
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,9 +20,10 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private static final int RECIPE_TYPE = 1;
     private static final int LOADING_TYPE = 2;
     private static final int CATEGORY_TYPE = 3;
+    private static final int EXHAUSTED_TYPE = 4;
 
     /* Data Members */
-    public int adapterType = 0;
+    public int adapterType = 1;
     private List<Recipe> mRecipes;
     private RecipeViewHolder.RecipeCategoryViewHolderListener mListener;
 
@@ -40,10 +39,13 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         View view;
 
-        switch (getItemViewType(0)) {
+        switch (viewType) {
             case LOADING_TYPE:
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_loading_list_item, viewGroup, false);
                 return new LoadingViewHolder(view);
+            case EXHAUSTED_TYPE:
+                view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_exhausted_list_item, viewGroup, false);
+                return new ExhaustedViewHolder(view);
             case CATEGORY_TYPE:
                 view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_category_list_item, viewGroup, false);
                 return new CategoryViewHolder(view, mListener);
@@ -57,7 +59,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
 
         /* Recipes Section */
-        if (getItemViewType(0) == RECIPE_TYPE) {
+        if (getItemViewType(i) == RECIPE_TYPE) {
             final Recipe currRecipe = mRecipes.get(i);
             ((RecipeViewHolder)viewHolder).textviewRecipeTitle.setText(currRecipe.getTitle());
             ((RecipeViewHolder)viewHolder).textViewRecipePublisher.setText(currRecipe.getPublisher());
@@ -71,7 +73,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         /* Category Section */
-        else if (getItemViewType(0) == CATEGORY_TYPE) {
+        else if (getItemViewType(i) == CATEGORY_TYPE) {
             final Recipe currRecipe = mRecipes.get(i);
             RequestOptions requestOptions = new RequestOptions().placeholder(R.drawable.ic_launcher_background);
             Glide.with(viewHolder.itemView.getContext())
@@ -84,11 +86,13 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
-        switch (getItemViewType(0)) {
+        switch (adapterType) {
             case RECIPE_TYPE:
                 return mRecipes.size();
             case LOADING_TYPE:
                 return 1;
+            case EXHAUSTED_TYPE:
+                return mRecipes.size() + 1;
             case CATEGORY_TYPE:
                 return Constants.DEFAULT_SEARCH_CATEGORIES.length;
             default:
@@ -98,6 +102,9 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
+        if (adapterType == EXHAUSTED_TYPE && position != mRecipes.size()) {
+            return RECIPE_TYPE;
+        }
         return adapterType;
     }
 
@@ -113,9 +120,13 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public void setProgress() {
-        if (getItemViewType(0) != LOADING_TYPE) {
+        if (adapterType != LOADING_TYPE) {
             setAdapterType(LOADING_TYPE);
         }
+    }
+
+    public void setExhausted() {
+        setAdapterType(EXHAUSTED_TYPE);
     }
 
     public Recipe getSelectedRecipe(int position) {

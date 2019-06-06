@@ -18,6 +18,7 @@ import com.example.sharecipes.adapter.RecipeViewHolder;
 import com.example.sharecipes.model.Recipe;
 import com.example.sharecipes.util.VerticalSpacingItemDecorator;
 import com.example.sharecipes.viewmodel.RecipeListVM;
+import com.example.sharecipes.viewmodel.ViewState;
 
 import java.util.List;
 
@@ -50,15 +51,34 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
         /* Setup Toolbar */
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
 
+        /*
         if (!mRecipeListVM.isRecipesDisplay()) {
             mAdapter.setCategories(mRecipeListVM.getCategories());
             mRecipeListVM.setIsRecipesDisplay(false);
-        }
+        } */
     }
 
     /* Methods */
     private void setupViewModel() {
         mRecipeListVM = ViewModelProviders.of(this).get(RecipeListVM.class);
+
+        // Observe to ViewState
+        mRecipeListVM.getViewState().observe(this, new Observer<RecipeListVM.ViewState>() {
+            @Override
+            public void onChanged(@Nullable RecipeListVM.ViewState viewState) {
+                if (viewState == null) { return; }
+                switch (viewState) {
+                    case RECIPES:
+                        break;
+                    case CATEGORIES:
+                        List<Recipe> categories = mRecipeListVM.getCategories();
+                        mAdapter.setCategories(categories);
+                        break;
+                }
+            }
+        });
+/*
+        // Observe to Recipes
         mRecipeListVM.getRecipes().observe(this, new Observer<List<Recipe>>() {
             @Override
             public void onChanged(@Nullable List<Recipe> recipes) {
@@ -67,6 +87,17 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
                 mRecipeListVM.setIsRecipesDisplay(true);
             }
         });
+
+        // Observe to IsQueryExhausted
+        mRecipeListVM.getIsQueryExhausted().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable Boolean aBoolean) {
+                if (aBoolean) {
+                   mAdapter.setExhausted();
+                }
+            }
+        });
+        */
     }
 
     private void setupRecyclerView() {
@@ -79,7 +110,7 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 if (!mRecyclerView.canScrollVertically(1)) {
-                    mRecipeListVM.searchNextPage();
+                    // mRecipeListVM.searchNextPage();
                 }
             }
         });
@@ -139,4 +170,5 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
         mAdapter.setProgress();
         mRecipeListVM.searchRecipe(category, 1);
     }
+
 }

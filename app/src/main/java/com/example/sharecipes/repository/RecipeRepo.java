@@ -1,6 +1,11 @@
 package com.example.sharecipes.repository;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
+import android.support.annotation.Nullable;
+
 import com.example.sharecipes.model.Recipe;
 import com.example.sharecipes.service.RecipeServiceClient;
 import java.util.List;
@@ -15,10 +20,14 @@ public class RecipeRepo {
     private RecipeServiceClient mRecipeServiceClient;
     private String mQuery;
     private int mPage;
+    private MutableLiveData<Boolean> mIsQueryExhausted;
+    private MediatorLiveData<List<Recipe>> mMediatorRecipes;
 
     /* Constructor */
     private RecipeRepo() {
         mRecipeServiceClient = RecipeServiceClient.getInstance();
+        mIsQueryExhausted = new MutableLiveData<>();
+        setupMediators();
     }
 
     /* Singleton */
@@ -29,9 +38,29 @@ public class RecipeRepo {
         return instance;
     }
 
-    /* Methods */
+    /* Private Methods */
+    private void setupMediators() {
+        mMediatorRecipes = new MediatorLiveData<>();
+        mMediatorRecipes.addSource(mRecipeServiceClient.getRecipes(), new Observer<List<Recipe>>() {
+            @Override
+            public void onChanged(@Nullable List<Recipe> recipes) {
+                if (recipes == null) {
+                    mIsQueryExhausted.setValue(true);
+                    return;
+                }
+                mMediatorRecipes.setValue(recipes);
+                if (recipes.size() % 30 != 0) { mIsQueryExhausted.setValue(true); }
+            }
+        });
+    }
+
+    /* Public Methods */
+    public LiveData<Boolean> getIsQueryExhausted() {
+        return mIsQueryExhausted;
+    }
+
     public LiveData<List<Recipe>> getRecipes() {
-        return mRecipeServiceClient.getRecipes();
+        return mMediatorRecipes;
     }
 
     public LiveData<Recipe> getRecipe() {
@@ -45,6 +74,7 @@ public class RecipeRepo {
     public void searchRecipe(String query, int page) {
         mQuery = query;
         mPage = page;
+        mIsQueryExhausted.setValue(false);
         mRecipeServiceClient.searchRecipe(query, page);
     }
 
