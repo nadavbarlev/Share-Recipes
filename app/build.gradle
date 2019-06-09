@@ -9,6 +9,13 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation":
+                                     "$projectDir/schemas".toString()]
+            }
+        }
     }
     buildTypes {
         release {
@@ -56,4 +63,9 @@ dependencies {
     /* Circle Image View */
     def circle_imageview_version = "3.0.0"
     implementation "de.hdodenhof:circleimageview:$circle_imageview_version"
+
+    /* Room */
+    def room_version = "2.1.0-rc01"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
 }

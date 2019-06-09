@@ -4,28 +4,53 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import java.util.Arrays;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+@Entity(tableName = "recipes")
 public class Recipe implements Parcelable {
 
     /* Properties */
-    private String   recipe_id;
-    private String   title;
-    private String   publisher;
+
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "recipe_id")
+    private String recipe_id;
+
+    @ColumnInfo(name = "title")
+    private String title;
+
+    @ColumnInfo(name = "publisher")
+    private String publisher;
+
+    @ColumnInfo(name = "ingredients")
     private String[] ingredients;
-    private float    social_rank;
-    private String   image_url;
+
+    @ColumnInfo(name = "social_rank")
+    private float social_rank;
+
+    @ColumnInfo(name = "image_url")
+    private String image_url;
+
+    @ColumnInfo(name = "timestamp")
+    private int timestamp;
 
     /* Constructors */
     public Recipe() {}
 
+
     public Recipe(String recipe_id, String title, String publisher, String[] ingredients,
-                  float social_rank, String image_url) {
+                  float social_rank, String image_url, int timestamp) {
         this.recipe_id = recipe_id;
         this.title = title;
         this.publisher = publisher;
         this.ingredients = ingredients;
         this.social_rank = social_rank;
         this.image_url = image_url;
+        this.timestamp = timestamp;
     }
 
     protected Recipe(Parcel in) {
@@ -35,6 +60,7 @@ public class Recipe implements Parcelable {
         ingredients = in.createStringArray();
         social_rank = in.readFloat();
         image_url = in.readString();
+        timestamp = in.readInt();
     }
 
     /* Getter and Setter */
@@ -50,6 +76,8 @@ public class Recipe implements Parcelable {
 
     public float getSocial_rank() { return social_rank; }
 
+    public int getTimestamp() { return timestamp; }
+
     public void setRecipe_id(String recipe_id) { this.recipe_id = recipe_id; }
 
     public void setTitle(String title) { this.title = title; }
@@ -62,7 +90,9 @@ public class Recipe implements Parcelable {
 
     public void setImage_url(String image_url) {  this.image_url = image_url; }
 
-    /* Override Methods */
+    public void setTimestamp(int timestamp) {  this.timestamp = timestamp; }
+
+
     @Override
     public String toString() {
         return "Recipe{" +
@@ -72,6 +102,7 @@ public class Recipe implements Parcelable {
                 ", ingredients=" + Arrays.toString(ingredients) +
                 ", social_rank=" + social_rank +
                 ", image_url='" + image_url + '\'' +
+                ", timestamp=" + timestamp +
                 '}';
     }
 
@@ -102,5 +133,6 @@ public class Recipe implements Parcelable {
         dest.writeStringArray(ingredients);
         dest.writeFloat(social_rank);
         dest.writeString(image_url);
+        dest.writeInt(timestamp);
     }
 }
