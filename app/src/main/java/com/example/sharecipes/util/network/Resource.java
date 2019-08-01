@@ -1,7 +1,8 @@
-package com.example.sharecipes.util.Network;
+package com.example.sharecipes.util.network;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Generic class that contains data and status about loading this data.

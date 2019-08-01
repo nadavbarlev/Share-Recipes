@@ -15,13 +15,13 @@
         android:usesCleartextTraffic="true">  <!-- Network Security for Http on API 28 and Upper -->
 
         <!-- Activities -->
-        <activity android:name=".RecipeListActivity">
+        <activity android:name=".activity.RecipeListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RecipeActivity" />
+        <activity android:name=".activity.RecipeActivity" />
 
     </application>
 

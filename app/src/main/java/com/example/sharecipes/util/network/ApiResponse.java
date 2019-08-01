@@ -1,4 +1,4 @@
-package com.example.sharecipes.util.Network;
+package com.example.sharecipes.util.network;
 
 
 import java.io.IOException;

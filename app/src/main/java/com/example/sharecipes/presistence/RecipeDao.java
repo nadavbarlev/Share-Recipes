@@ -21,8 +21,8 @@ public interface RecipeDao {
     @Insert(onConflict = REPLACE)
     void insertRecipe(Recipe recipe);
 
-    @Query("UPDATE recipes SET recipe_id = :recipe_id, title = :title, publisher = :publisher, " +
-            "social_rank = :social_rank, image_url = :image_url")
+    @Query("UPDATE recipes SET title = :title, publisher = :publisher, image_url = :image_url, " +
+            "social_rank = :social_rank WHERE recipe_id = :recipe_id")
     void updateRecipe(String recipe_id, String title, String publisher, float social_rank, String image_url);
 
     @Query("SELECT * FROM recipes WHERE title LIKE '%' || :query || '%' OR ingredients LIKE '%' || :query || '%' " +

@@ -1,11 +1,6 @@
-package com.example.sharecipes;
+package com.example.sharecipes.activity;
 
-import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatImageView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -14,8 +9,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.sharecipes.R;
 import com.example.sharecipes.model.Recipe;
 import com.example.sharecipes.viewmodel.RecipeVM;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.lifecycle.ViewModelProviders;
 
 public class RecipeActivity extends BaseActivity {
 
@@ -54,6 +54,7 @@ public class RecipeActivity extends BaseActivity {
         mRecipeVM = ViewModelProviders.of(this).get(RecipeVM.class);
 
         // Observe to Recipe
+        /*
         mRecipeVM.getRecipe().observe(this, new Observer<Recipe>() {
             @Override
             public void onChanged(@Nullable Recipe recipe) {
@@ -73,6 +74,7 @@ public class RecipeActivity extends BaseActivity {
                 }
             }
         });
+        */
     }
 
     private void setViewsProperties(Recipe recipe) {
@@ -108,7 +110,7 @@ public class RecipeActivity extends BaseActivity {
     private void getIncomingIntent() {
         if (getIntent().hasExtra("recipe")) {
             Recipe recipe = getIntent().getParcelableExtra("recipe");
-            mRecipeVM.searchRecipeBy(recipe.getRecipe_id());
+            //mRecipeVM.searchRecipeBy(recipe.getRecipe_id());
         }
     }
 

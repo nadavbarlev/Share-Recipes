@@ -1,12 +1,13 @@
-package com.example.sharecipes;
+package com.example.sharecipes.activity;
 
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 
-import com.example.sharecipes.util.HorizontalDottedProgress;
+import com.example.sharecipes.R;
+import com.example.sharecipes.util.ui.HorizontalDottedProgress;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 public abstract class BaseActivity extends AppCompatActivity {
 

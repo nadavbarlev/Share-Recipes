@@ -1,4 +1,4 @@
-package com.example.sharecipes.util.Network;
+package com.example.sharecipes.util.network;
 
 import com.example.sharecipes.util.AppExecutors;
 
@@ -17,12 +17,11 @@ import androidx.lifecycle.Observer;
 public abstract class NetworkBoundResource<CacheObject, RequestObject> {
 
     /* Data Members */
-
     private AppExecutors executors;
-    private MediatorLiveData<Resource<CacheObject>> results; // The Single Source of Truth
+    private MediatorLiveData<Resource<CacheObject>> results;
 
     /* Constructor*/
-    NetworkBoundResource(AppExecutors executors) {
+    public NetworkBoundResource(AppExecutors executors) {
         this.executors = executors;
         this.results = new MediatorLiveData<>();
         setup();
@@ -87,12 +86,14 @@ public abstract class NetworkBoundResource<CacheObject, RequestObject> {
         // Success
         if (requestObjectApiResponse instanceof ApiResponse.ApiSuccessResponse) {
 
-            // Save to the local DB
             AppExecutors.getInstance().background().execute(new Runnable() {
                 @Override
                 public void run() {
+
                    RequestObject requestObject = (RequestObject)
                            ((ApiResponse.ApiSuccessResponse)requestObjectApiResponse).getBody();
+
+                    // Save to the local DB
                     saveCallResult(requestObject);
 
                     // Start observing again to see the refreshed data

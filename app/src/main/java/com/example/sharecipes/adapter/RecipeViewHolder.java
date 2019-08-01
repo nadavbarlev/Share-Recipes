@@ -1,26 +1,33 @@
 package com.example.sharecipes.adapter;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.RequestManager;
 import com.example.sharecipes.R;
+import com.example.sharecipes.model.Recipe;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class RecipeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     /* Views */
-    TextView textviewRecipeTitle;
-    TextView textViewRecipePublisher;
-    TextView textViewRecipeScore;
-    AppCompatImageView imageviewRecipe;
+    private TextView textviewRecipeTitle;
+    private TextView textViewRecipePublisher;
+    private TextView textViewRecipeScore;
+    private AppCompatImageView imageviewRecipe;
 
     /* Data Members */
-    RecipeCategoryViewHolderListener listener;
+    private RecipeCategoryViewHolderListener mListener;
+    private RequestManager mGlideRequestManager;
+
 
     /* Constructor */
-    public RecipeViewHolder(@NonNull View itemView, RecipeCategoryViewHolderListener listener) {
+    public RecipeViewHolder(@NonNull View itemView,
+                            RecipeCategoryViewHolderListener listener,
+                            RequestManager requestManager) {
         super(itemView);
 
         /* Views */
@@ -29,13 +36,29 @@ public class RecipeViewHolder extends RecyclerView.ViewHolder implements View.On
         textViewRecipeScore = itemView.findViewById(R.id.textview_recipe_score);
         imageviewRecipe = itemView.findViewById(R.id.image_recipe);
 
-        this.listener = listener;
+        /* Members */
+        this.mListener = listener;
+        this.mGlideRequestManager = requestManager;
+
+        /* Events */
         this.itemView.setOnClickListener(this);
     }
 
+    /* Methods */
+    public void onBind(Recipe recipe) {
+        textviewRecipeTitle.setText(recipe.getTitle());
+        textViewRecipePublisher.setText(recipe.getPublisher());
+        textViewRecipeScore.setText(String.valueOf(Math.round(recipe.getSocial_rank())));
+
+        mGlideRequestManager.load(recipe.getImage_url())
+                            .into(imageviewRecipe);
+    }
+
+    /* Implement OnClickListener */
     @Override
     public void onClick(View v) {
-        listener.onRecipeClicked(getAdapterPosition());
+        if (mListener == null) { return; }
+        mListener.onRecipeClicked(getAdapterPosition());
     }
 
 

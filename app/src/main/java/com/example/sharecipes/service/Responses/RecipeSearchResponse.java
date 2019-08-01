@@ -3,7 +3,6 @@ package com.example.sharecipes.service.Responses;
 import com.example.sharecipes.model.Recipe;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import java.util.Arrays;
 import java.util.List;
 
 public class RecipeSearchResponse {

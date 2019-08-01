@@ -2,10 +2,10 @@ package com.example.sharecipes.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import java.util.Arrays;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -14,7 +14,6 @@ import androidx.room.PrimaryKey;
 public class Recipe implements Parcelable {
 
     /* Properties */
-
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "recipe_id")
@@ -40,7 +39,6 @@ public class Recipe implements Parcelable {
 
     /* Constructors */
     public Recipe() {}
-
 
     public Recipe(String recipe_id, String title, String publisher, String[] ingredients,
                   float social_rank, String image_url, int timestamp) {
@@ -92,7 +90,7 @@ public class Recipe implements Parcelable {
 
     public void setTimestamp(int timestamp) {  this.timestamp = timestamp; }
 
-
+    /* Override Methods */
     @Override
     public String toString() {
         return "Recipe{" +

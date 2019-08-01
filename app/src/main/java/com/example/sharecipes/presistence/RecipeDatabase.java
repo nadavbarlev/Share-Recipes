@@ -1,7 +1,9 @@
 package com.example.sharecipes.presistence;
 
 import android.content.Context;
+
 import com.example.sharecipes.model.Recipe;
+
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -15,15 +17,18 @@ public abstract class RecipeDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "db_recipes";
 
     // Constructor
-    private RecipeDatabase() {}
+    public RecipeDatabase() {}
 
     // Singleton
-    private RecipeDatabase instance = null;
-    public RecipeDatabase getInstance(Context context) {
+    private static RecipeDatabase instance = null;
+    public static RecipeDatabase getInstance(Context context) {
         if (instance != null) { return instance; }
         instance = Room.databaseBuilder(context.getApplicationContext(),
                                         RecipeDatabase.class,
                                         DATABASE_NAME).build();
         return instance;
     }
+
+    // Methods
+    public abstract RecipeDao getRecipeDao();
 }

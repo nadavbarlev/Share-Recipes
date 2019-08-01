@@ -1,10 +1,8 @@
 package com.example.sharecipes.viewmodel;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.ViewModel;
-
-import com.example.sharecipes.model.Recipe;
 import com.example.sharecipes.repository.RecipeRepo;
+
+import androidx.lifecycle.ViewModel;
 
 public class RecipeVM extends ViewModel {
 
@@ -15,7 +13,7 @@ public class RecipeVM extends ViewModel {
 
     /* Constructor */
     public RecipeVM() {
-        mRecipeRepo = RecipeRepo.getInstance();
+        // mRecipeRepo = RecipeRepo.getInstance();
     }
 
     /* Getter and Setter */
@@ -28,20 +26,21 @@ public class RecipeVM extends ViewModel {
     }
 
     /* Methods */
+    /*
     public LiveData<Recipe> getRecipe() {
         return mRecipeRepo.getRecipe();
     }
 
     public LiveData<Boolean> getIsNetworkTimeout() {
         return mRecipeRepo.getIsNetworkTimeout();
-    }
+    }*/
 
     public String getRecipeID() {
         return mCurrRecipeID;
     }
-
+/*
     public void searchRecipeBy(String id) {
         mCurrRecipeID = id;
         mRecipeRepo.searchRecipeBy(id);
-    }
+    }*/
 }
