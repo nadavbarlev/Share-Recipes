@@ -11,10 +11,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.sharecipes.R;
 import com.example.sharecipes.model.Recipe;
+import com.example.sharecipes.util.network.Resource;
 import com.example.sharecipes.viewmodel.RecipeVM;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 public class RecipeActivity extends BaseActivity {
@@ -23,6 +25,7 @@ public class RecipeActivity extends BaseActivity {
 
     /* Data Members */
     private RecipeVM mRecipeVM;
+    private Recipe mRecipe;
 
     /* Views */
     private ScrollView mScrollViewContainer;
@@ -52,29 +55,6 @@ public class RecipeActivity extends BaseActivity {
     /* Private Methods */
     private void setupViewModel() {
         mRecipeVM = ViewModelProviders.of(this).get(RecipeVM.class);
-
-        // Observe to Recipe
-        /*
-        mRecipeVM.getRecipe().observe(this, new Observer<Recipe>() {
-            @Override
-            public void onChanged(@Nullable Recipe recipe) {
-                if (recipe == null ||
-                    !recipe.getRecipe_id().equals(mRecipeVM.getRecipeID())) { return; }
-                mRecipeVM.setIsRetrieveRecipe(true);
-                setViewsProperties(recipe);
-            }
-        });
-
-        // Observe to Network Timeout
-        mRecipeVM.getIsNetworkTimeout().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean aBoolean) {
-                if (aBoolean && !mRecipeVM.getIsRetrieveRecipe()) {
-                    showErrorScreen("Error Retrieving Data. Please check network connection");
-                }
-            }
-        });
-        */
     }
 
     private void setViewsProperties(Recipe recipe) {
@@ -109,8 +89,24 @@ public class RecipeActivity extends BaseActivity {
 
     private void getIncomingIntent() {
         if (getIntent().hasExtra("recipe")) {
-            Recipe recipe = getIntent().getParcelableExtra("recipe");
-            //mRecipeVM.searchRecipeBy(recipe.getRecipe_id());
+            mRecipe = getIntent().getParcelableExtra("recipe");
+            mRecipeVM.searchRecipeBy(mRecipe.getRecipe_id()).observe(this, new Observer<Resource<Recipe>>() {
+                @Override
+                public void onChanged(Resource<Recipe> recipeResource) {
+                    if (recipeResource == null || recipeResource.data == null) { return; }
+                    switch (recipeResource.status) {
+                        case LOADING:
+                            showProgressBar(true);
+                            break;
+                        case ERROR:
+                            showErrorScreen(recipeResource.message);
+                            break;
+                        case SUCCESS:
+                            setViewsProperties(recipeResource.data);
+                            break;
+                    }
+                }
+            });
         }
     }
 

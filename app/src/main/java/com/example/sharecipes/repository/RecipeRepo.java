@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.sharecipes.model.Recipe;
 import com.example.sharecipes.presistence.RecipeDao;
 import com.example.sharecipes.presistence.RecipeDatabase;
+import com.example.sharecipes.service.Responses.RecipeResponse;
 import com.example.sharecipes.service.Responses.RecipeSearchResponse;
 import com.example.sharecipes.service.ServiceGenerator;
 import com.example.sharecipes.util.AppExecutors;
@@ -51,7 +52,9 @@ public class RecipeRepo {
             protected void saveCallResult(@NonNull RecipeSearchResponse item) {
 
                 // Check if API Key is expired
-                if (item.getRecipes() == null) { return; }
+                if (item.getRecipes() == null) {
+                    return;
+                }
 
                 // Recipes got from Server
                 Recipe[] recipes = new Recipe[item.getCount()];
@@ -67,10 +70,10 @@ public class RecipeRepo {
                         // Don't change the ingredients and timestamp
                         Recipe recipe = recipes[index];
                         recipeDao.updateRecipe(recipe.getRecipe_id(),
-                                               recipe.getTitle(),
-                                               recipe.getPublisher(),
-                                               recipe.getSocial_rank(),
-                                               recipe.getImage_url());
+                                recipe.getTitle(),
+                                recipe.getPublisher(),
+                                recipe.getSocial_rank(),
+                                recipe.getImage_url());
                     }
                 }
             }
@@ -91,9 +94,47 @@ public class RecipeRepo {
             protected LiveData<ApiResponse<RecipeSearchResponse>> createCall() {
                 return ServiceGenerator.getRecipeService()
                         .searchRecipe(Constants.API_KEY_2,
-                                      query,
-                                      String.valueOf(pageNumber));
+                                query,
+                                String.valueOf(pageNumber));
 
+            }
+        }.getAsLiveData();
+    }
+
+    public LiveData<Resource<Recipe>> searchRecipeApi(final String recipeID) {
+
+        return new NetworkBoundResource<Recipe, RecipeResponse>(AppExecutors.getInstance()) {
+
+            @Override
+            protected void saveCallResult(@NonNull RecipeResponse item) {
+
+                // Check if API Key is expired
+                if (item.getRecipe() == null) {
+                    return;
+                }
+
+                // Recipes got from Server
+                item.getRecipe().setTimestamp((int) System.currentTimeMillis() / 1000);
+                recipeDao.insertRecipe(item.getRecipe());
+            }
+
+            @Override
+            protected boolean shouldFetch(@Nullable Recipe data) {
+                int currentTime = (int)System.currentTimeMillis() / 1000;
+                int lastRecipeUpdateTime = data.getTimestamp();
+                return currentTime - lastRecipeUpdateTime > Constants.RECIPE_REFRESH_TIME;
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<Recipe> loadFromDb() {
+                return recipeDao.getRecipe(recipeID);
+            }
+
+            @NonNull
+            @Override
+            protected LiveData<ApiResponse<RecipeResponse>> createCall() {
+                return ServiceGenerator.getRecipeService().getRecipe(Constants.API_KEY_2, recipeID);
             }
         }.getAsLiveData();
     }

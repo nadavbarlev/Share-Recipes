@@ -8,6 +8,7 @@ public class Constants {
     public static final String API_KEY_3  = "77bc14e9796dfe1cfd4873b3796d4f69";
     public static final String API_KEY_4  = "6e2cb12571aeb58212b184d1f563292c";
     public static final long NETWORK_TIMEOUT = 3000;
+    public static final int RECIPE_REFRESH_TIME = 60 * 60 * 24; // 1 DAY
     public static final String[] DEFAULT_SEARCH_CATEGORIES =
             { "Barbeque", "Breakfast", "Chicken", "Beef", "Brunch", "Dinner", "Wine", "Italian" };
     public static final String[] DEFAULT_SEARCH_CATEGORY_IMAGES =

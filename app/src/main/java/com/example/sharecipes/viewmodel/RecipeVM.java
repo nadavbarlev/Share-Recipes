@@ -1,10 +1,16 @@
 package com.example.sharecipes.viewmodel;
 
+import android.app.Application;
+
+import com.example.sharecipes.model.Recipe;
 import com.example.sharecipes.repository.RecipeRepo;
+import com.example.sharecipes.util.network.Resource;
 
-import androidx.lifecycle.ViewModel;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
 
-public class RecipeVM extends ViewModel {
+public class RecipeVM extends AndroidViewModel {
 
     /* Data Members */
     private String mCurrRecipeID;
@@ -12,8 +18,10 @@ public class RecipeVM extends ViewModel {
     private Boolean    mIsRetrieveRecipe = false;
 
     /* Constructor */
-    public RecipeVM() {
-        // mRecipeRepo = RecipeRepo.getInstance();
+
+    public RecipeVM(@NonNull Application application) {
+        super(application);
+        mRecipeRepo = RecipeRepo.getInstance(getApplication());
     }
 
     /* Getter and Setter */
@@ -38,9 +46,8 @@ public class RecipeVM extends ViewModel {
     public String getRecipeID() {
         return mCurrRecipeID;
     }
-/*
-    public void searchRecipeBy(String id) {
-        mCurrRecipeID = id;
-        mRecipeRepo.searchRecipeBy(id);
-    }*/
+
+    public LiveData<Resource<Recipe>> searchRecipeBy(String id) {
+        return mRecipeRepo.searchRecipeApi(id);
+    }
 }
