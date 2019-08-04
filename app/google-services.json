@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "934595768009",
+    "firebase_url": "https://sharecipes-85359.firebaseio.com",
+    "project_id": "sharecipes-85359",
+    "storage_bucket": "sharecipes-85359.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:934595768009:android:e77144207566a4be",
+        "android_client_info": {
+          "package_name": "com.example.sharecipes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "934595768009-sqfqu37npfa9agmm8fpjv36pjv31rh28.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWzAHtpH5owFxakdYsz97DJe7ssfypw1M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "934595768009-sqfqu37npfa9agmm8fpjv36pjv31rh28.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

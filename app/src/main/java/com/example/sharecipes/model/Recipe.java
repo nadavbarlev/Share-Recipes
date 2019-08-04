@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -132,5 +133,14 @@ public class Recipe implements Parcelable {
         dest.writeFloat(social_rank);
         dest.writeString(image_url);
         dest.writeInt(timestamp);
+    }
+
+    /* Converter */
+    public static Recipe toRecipe(Map<String, String> mapRecipe) {
+        String title = mapRecipe.get("title");
+        String publisher = mapRecipe.get("publisher");
+        String ingredients = mapRecipe.get("ingredients");
+        String image_url = mapRecipe.get("imageUri");
+        return new Recipe("1", title, publisher, ingredients.split("\n"), 0, image_url, 0);
     }
 }

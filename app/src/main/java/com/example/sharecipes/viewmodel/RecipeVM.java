@@ -33,16 +33,6 @@ public class RecipeVM extends AndroidViewModel {
         return mIsRetrieveRecipe;
     }
 
-    /* Methods */
-    /*
-    public LiveData<Recipe> getRecipe() {
-        return mRecipeRepo.getRecipe();
-    }
-
-    public LiveData<Boolean> getIsNetworkTimeout() {
-        return mRecipeRepo.getIsNetworkTimeout();
-    }*/
-
     public String getRecipeID() {
         return mCurrRecipeID;
     }

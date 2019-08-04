@@ -42,8 +42,4 @@ public class RecipeServiceClient {
     public LiveData<Recipe> getRecipe() {
         return mRecipe;
     }
-
-    public LiveData<Boolean> getIsNetworkTimeout() {
-        return mIsNetworkTimeout;
-    }
 }

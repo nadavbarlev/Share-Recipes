@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/action_categories" android:title="Categories" />
+    <item android:id="@+id/action_add" android:title="Add Recipe" />
+    <item android:id="@+id/action_sign_out" android:title="Sign Out" />
 
 </menu>

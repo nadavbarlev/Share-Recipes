@@ -1,23 +1,27 @@
 package com.example.sharecipes.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.sharecipes.R;
-import com.example.sharecipes.adapter.CategoryViewHolder;
 import com.example.sharecipes.adapter.RecipeRecyclerAdapter;
 import com.example.sharecipes.adapter.RecipeViewHolder;
+import com.example.sharecipes.firebase.FirebaseAuthService;
+import com.example.sharecipes.firebase.FirebaseDatabaseService;
+import com.example.sharecipes.firebase.callback.FirebaseDatabaseListener;
 import com.example.sharecipes.model.Recipe;
 import com.example.sharecipes.util.network.Resource;
 import com.example.sharecipes.util.ui.VerticalSpacingItemDecorator;
 import com.example.sharecipes.viewmodel.RecipeListVM;
 
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,12 +60,6 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
 
         /* Setup Toolbar */
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
-
-        /*
-        if (!mRecipeListVM.isRecipesDisplay()) {
-            mAdapter.setCategories(mRecipeListVM.getCategories());
-            mRecipeListVM.setIsRecipesDisplay(false);
-        } */
     }
 
     /* Methods */
@@ -88,7 +86,7 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
         // Observe to Recipes
         mRecipeListVM.getRecipes().observe(this, new Observer<Resource<List<Recipe>>>() {
             @Override
-            public void onChanged(Resource<List<Recipe>> listResource) {
+            public void onChanged(final Resource<List<Recipe>> listResource) {
                 if (listResource == null || listResource.data == null) { return; }
                 switch (listResource.status) {
                     case LOADING:
@@ -102,23 +100,26 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
                         }
                         break;
                     case SUCCESS:
-                        mAdapter.setRecipes(listResource.data);
+
+                        FirebaseDatabaseService.getInstance().getValue("nadav", new FirebaseDatabaseListener() {
+                            @Override
+                            public void onSuccess(Map<String, String> mapRecipe) {
+                               Recipe recipe = Recipe.toRecipe(mapRecipe);
+                               listResource.data.add(0, recipe);
+                               mAdapter.setRecipes(listResource.data);
+                            }
+
+                            @Override
+                            public void onFailure() {
+
+                            }
+                        });
+
+                        //mAdapter.setRecipes(listResource.data);
                         break;
                 }
             }
         });
-
-        /*
-        // Observe to IsQueryExhausted
-        mRecipeListVM.getIsQueryExhausted().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean aBoolean) {
-                if (aBoolean) {
-                   mAdapter.setExhausted();
-                }
-            }
-        });
-        */
     }
 
 
@@ -165,7 +166,7 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
                 .setDefaultRequestOptions(requestOptions);
     }
 
-    /* Override Methods */
+    /* Override Methods - Back Button */
     @Override
     public void onBackPressed() {
         if (mRecipeListVM.getViewState().getValue() == RecipeListVM.ViewState.RECIPES) {
@@ -175,7 +176,7 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
         }
     }
 
-    /*
+    /* Override Methods - Menu */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.recipe_search_menu, menu);
@@ -184,13 +185,18 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_categories) {
-            mRecipeListVM.setIsRecipesDisplay(false);
-            mAdapter.setCategories(mRecipeListVM.getCategories());
+        if (item.getItemId() == R.id.action_sign_out) {
+            FirebaseAuthService.getInstance().SignOut();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
+
+        } else if (item.getItemId() == R.id.action_add) {
+            Intent intent = new Intent(this, AddRecipeActivity.class);
+            startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }
-*/
 
     /* Implement RecipeViewHolder.RecipeViewHolderListener */
     @Override
