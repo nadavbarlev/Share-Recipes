@@ -39,8 +39,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
 
     // TODO: 1. Read data firebase
-    // TODO: 2. Merge firebase data and API data
-    // TODO: 3. Color icons at Tab bar
-    // TODO: 4. Show Progress bar
-    // TODO: 5. Intent at Tab bar
+    // TODO: 2. Merge firebase data and food2fork data
+    // TODO: 3. Icons color at Tab bar
+    // TODO: 4. Show Progress bar in base activity
+    // TODO: 5. Intents at Tab bar
 }
