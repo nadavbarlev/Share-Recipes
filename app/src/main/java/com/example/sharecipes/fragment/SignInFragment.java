@@ -19,9 +19,7 @@ import android.widget.Toast;
 import com.example.sharecipes.R;
 import com.example.sharecipes.activity.RecipeListActivity;
 import com.example.sharecipes.firebase.FirebaseAuthService;
-import com.example.sharecipes.firebase.callback.FirebaseAuthListener;
 import com.example.sharecipes.util.ui.HorizontalDottedProgress;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 /**

@@ -14,11 +14,11 @@ import com.example.sharecipes.adapter.RecipeRecyclerAdapter;
 import com.example.sharecipes.adapter.RecipeViewHolder;
 import com.example.sharecipes.firebase.FirebaseAuthService;
 import com.example.sharecipes.firebase.FirebaseDatabaseService;
-import com.example.sharecipes.firebase.callback.FirebaseDatabaseListener;
 import com.example.sharecipes.model.Recipe;
 import com.example.sharecipes.util.network.Resource;
 import com.example.sharecipes.util.ui.VerticalSpacingItemDecorator;
 import com.example.sharecipes.viewmodel.RecipeListVM;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
 import java.util.Map;
@@ -42,6 +42,7 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
     private RecipeRecyclerAdapter mAdapter;
 
     /* Views */
+    private BottomNavigationView mBottomNavigationView;
     private RecyclerView mRecyclerView;
     private SearchView mSearchView;
 
@@ -52,6 +53,7 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
         setContentView(R.layout.activity_recipe_list);
 
         /* Setup Components */
+        setupBottomNavigationView();
         setupSearchView();
         setupRecyclerView();
 
@@ -101,7 +103,8 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
                         break;
                     case SUCCESS:
 
-                        FirebaseDatabaseService.getInstance().getValue("nadav", new FirebaseDatabaseListener() {
+                        /*
+                        FirebaseDatabaseService.getInstance().getValue("nadav", new FirebaseDatabaseListenerSingleValue() {
                             @Override
                             public void onSuccess(Map<String, String> mapRecipe) {
                                Recipe recipe = Recipe.toRecipe(mapRecipe);
@@ -114,7 +117,7 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
 
                             }
                         });
-
+*/
                         //mAdapter.setRecipes(listResource.data);
                         break;
                 }
@@ -122,6 +125,27 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
         });
     }
 
+    private void setupBottomNavigationView() {
+        mBottomNavigationView = findViewById(R.id.bottomNavigationViewRecipeList);
+        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.itemSearch:
+                        break;
+                    case R.id.itemUpload:
+                        Intent intentRecipes = new Intent(RecipeListActivity.this, UploadRecipeActivity.class);
+                        startActivity(intentRecipes);
+                        break;
+                    case R.id.itemProfile:
+                        Intent intentProfile = new Intent(RecipeListActivity.this, ProfileActivity.class);
+                        startActivity(intentProfile);
+                        break;
+                }
+                return false;
+            }
+        });
+    }
 
     private void setupRecyclerView() {
         mRecyclerView = findViewById(R.id.recyclerview);
@@ -187,12 +211,12 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_sign_out) {
             FirebaseAuthService.getInstance().SignOut();
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             startActivity(intent);
 
         } else if (item.getItemId() == R.id.action_add) {
-            Intent intent = new Intent(this, AddRecipeActivity.class);
+            Intent intent = new Intent(this, UploadRecipeActivity.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

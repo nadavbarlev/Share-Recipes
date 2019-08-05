@@ -2,7 +2,7 @@ package com.example.sharecipes.firebase;
 
 import android.net.Uri;
 
-import com.example.sharecipes.firebase.callback.FirebaseStorageListener;
+import com.example.sharecipes.util.callback.GenericCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -31,7 +31,7 @@ public class FirebaseStorageService {
     }
 
     /* Methods */
-    public void upload(String path, Uri uri, final FirebaseStorageListener listener) {
+    public void upload(String path, Uri uri, final GenericCallback<Uri, String> listener) {
 
         mStorageRef.child(path).putFile(uri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -44,7 +44,7 @@ public class FirebaseStorageService {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        listener.onFailure();
+                        listener.onFailure(exception.getLocalizedMessage());
                     }
                 });
     }

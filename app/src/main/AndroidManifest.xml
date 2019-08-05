@@ -13,14 +13,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.ProfileActivity"></activity>
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.AddRecipeActivity" /> <!-- Network Security for Http on API 28 and Upper -->
+        <activity android:name=".activity.UploadRecipeActivity" /> <!-- Network Security for Http on API 28 and Upper -->
         <!-- Activities -->
         <activity android:name=".activity.RecipeActivity" />
         <activity

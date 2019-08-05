@@ -2,8 +2,6 @@ package com.example.sharecipes.repository;
 
 import android.content.Context;
 
-import com.example.sharecipes.firebase.FirebaseDatabaseService;
-import com.example.sharecipes.firebase.callback.FirebaseDatabaseListener;
 import com.example.sharecipes.model.Recipe;
 import com.example.sharecipes.presistence.RecipeDao;
 import com.example.sharecipes.presistence.RecipeDatabase;
@@ -17,13 +15,10 @@ import com.example.sharecipes.util.network.NetworkBoundResource;
 import com.example.sharecipes.util.network.Resource;
 
 import java.util.List;
-import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
 
 public class RecipeRepo {
 

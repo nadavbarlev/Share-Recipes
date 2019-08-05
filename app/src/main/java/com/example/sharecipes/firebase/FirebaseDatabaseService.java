@@ -1,6 +1,6 @@
 package com.example.sharecipes.firebase;
 
-import com.example.sharecipes.firebase.callback.FirebaseDatabaseListener;
+import com.example.sharecipes.util.callback.GenericCallback;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +31,24 @@ public class FirebaseDatabaseService {
     }
 
     /* Methods */
+    public void getUsername(final GenericCallback<String, String> callback) {
+
+        String path = String.format("users/%s", FirebaseAuthService.getInstance().getUserID());
+
+        FirebaseDatabaseService.getInstance().getValue(path, new GenericCallback<String, String>() {
+            @Override
+            public void onSuccess(String value) {
+                callback.onSuccess(value);
+            }
+
+            @Override
+            public void onFailure(String error) {
+                callback.onFailure(error);
+            }
+        });
+    }
+
+    /* Generic Setters */
     public void setValue(String path, String data) {
         mRecipeRef.child(path).setValue(data);
     }
@@ -39,25 +57,19 @@ public class FirebaseDatabaseService {
         mRecipeRef.child(path).setValue(data);
     }
 
-    public void getValue(String path, final FirebaseDatabaseListener listener) {
+    /* Generic Getters */
+    public void getValue(String path, final GenericCallback<String, String> listener) {
 
-        // Read from the database
         mRecipeRef.child(path).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-
-                Map<String, String> mapRecipe = (Map<String, String>)dataSnapshot.getValue();
-                listener.onSuccess(mapRecipe);
-
+                listener.onSuccess(dataSnapshot.getValue().toString());
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                // Failed to read value
+                listener.onFailure(error.getMessage());
             }
         });
-
     }
 }

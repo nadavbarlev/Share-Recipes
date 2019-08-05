@@ -17,12 +17,11 @@ import com.example.sharecipes.R;
 import com.example.sharecipes.firebase.FirebaseAuthService;
 import com.example.sharecipes.firebase.FirebaseDatabaseService;
 import com.example.sharecipes.firebase.FirebaseStorageService;
-import com.example.sharecipes.firebase.callback.FirebaseStorageListener;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddRecipeActivity extends AppCompatActivity implements View.OnClickListener {
+public class UploadRecipeActivity extends AppCompatActivity implements View.OnClickListener {
 
     // Data Members
     private final int GALLERY_REQUEST_CODE = 1;
@@ -37,7 +36,7 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_recipe);
+        setContentView(R.layout.activity_upload_recipe);
 
         // Views
         imageViewRecipe = findViewById(R.id.imageView_recipe);
@@ -93,7 +92,7 @@ public class AddRecipeActivity extends AppCompatActivity implements View.OnClick
 
             @Override
             public void onFailure() {
-                Toast.makeText(AddRecipeActivity.this, "Upload Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(UploadRecipeActivity.this, "Upload Failed", Toast.LENGTH_SHORT).show();
             }
         });
 
