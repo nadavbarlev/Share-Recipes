@@ -14,12 +14,10 @@ public class FirebaseDatabaseService {
     /* Data Members */
     private static FirebaseDatabaseService mInstance;
     private FirebaseDatabase mDatabase;
-    private DatabaseReference mRecipeRef;
 
     /* Constructor */
     private FirebaseDatabaseService() {
         mDatabase = FirebaseDatabase.getInstance();
-        mRecipeRef = mDatabase.getReference("recipes");
     }
 
     /* Singleton */
@@ -50,17 +48,17 @@ public class FirebaseDatabaseService {
 
     /* Generic Setters */
     public void setValue(String path, String data) {
-        mRecipeRef.child(path).setValue(data);
+        mDatabase.getReference().child(path).setValue(data);
     }
 
     public void setValue(String path, Map<String, String> data) {
-        mRecipeRef.child(path).setValue(data);
+        mDatabase.getReference().child(path).setValue(data);
     }
 
     /* Generic Getters */
     public void getValue(String path, final GenericCallback<String, String> listener) {
 
-        mRecipeRef.child(path).addValueEventListener(new ValueEventListener() {
+        mDatabase.getReference().child(path).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 listener.onSuccess(dataSnapshot.getValue().toString());

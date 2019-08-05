@@ -13,15 +13,14 @@ import com.example.sharecipes.R;
 import com.example.sharecipes.adapter.RecipeRecyclerAdapter;
 import com.example.sharecipes.adapter.RecipeViewHolder;
 import com.example.sharecipes.firebase.FirebaseAuthService;
-import com.example.sharecipes.firebase.FirebaseDatabaseService;
 import com.example.sharecipes.model.Recipe;
+import com.example.sharecipes.util.AppService;
 import com.example.sharecipes.util.network.Resource;
 import com.example.sharecipes.util.ui.VerticalSpacingItemDecorator;
 import com.example.sharecipes.viewmodel.RecipeListVM;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
-import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -103,6 +102,8 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
                         break;
                     case SUCCESS:
 
+                        mAdapter.setRecipes(listResource.data);
+
                         /*
                         FirebaseDatabaseService.getInstance().getValue("nadav", new FirebaseDatabaseListenerSingleValue() {
                             @Override
@@ -117,8 +118,8 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
 
                             }
                         });
-*/
-                        //mAdapter.setRecipes(listResource.data);
+                        */
+
                         break;
                 }
             }
@@ -134,11 +135,11 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
                     case R.id.itemSearch:
                         break;
                     case R.id.itemUpload:
-                        Intent intentRecipes = new Intent(RecipeListActivity.this, UploadRecipeActivity.class);
-                        startActivity(intentRecipes);
+                        Intent intentUpload = AppService.getUploadIntent(RecipeListActivity.this);
+                        startActivity(intentUpload);
                         break;
                     case R.id.itemProfile:
-                        Intent intentProfile = new Intent(RecipeListActivity.this, ProfileActivity.class);
+                        Intent intentProfile = AppService.getProfileIntent(RecipeListActivity.this);
                         startActivity(intentProfile);
                         break;
                 }
@@ -216,7 +217,7 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
             startActivity(intent);
 
         } else if (item.getItemId() == R.id.action_add) {
-            Intent intent = new Intent(this, UploadRecipeActivity.class);
+            Intent intent = new Intent(this, UploadActivity.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

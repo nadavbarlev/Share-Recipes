@@ -1,10 +1,12 @@
 package com.example.sharecipes.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,9 +15,11 @@ import android.widget.Toast;
 import com.example.sharecipes.R;
 import com.example.sharecipes.firebase.FirebaseAuthService;
 import com.example.sharecipes.firebase.FirebaseDatabaseService;
+import com.example.sharecipes.util.AppService;
 import com.example.sharecipes.util.callback.Callback;
 import com.example.sharecipes.util.callback.GenericCallback;
 import com.example.sharecipes.util.ui.HorizontalDottedProgress;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -26,7 +30,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private Button buttonSave;
     private Button buttonSignOut;
     private HorizontalDottedProgress progressBar;
-
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +44,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         buttonSave = findViewById(R.id.buttonProfileSave);
         buttonSignOut = findViewById(R.id.buttonSignOut);
         progressBar = findViewById(R.id.progressBarProfile);
+        bottomNavigationView = findViewById(R.id.bottomNavigationViewProfile);
 
         /* Events */
         buttonSave.setOnClickListener(this);
         buttonSignOut.setOnClickListener(this);
 
         setupViews();
+        setupBottomNavigationView();
     }
 
     /* Private Methods */
@@ -63,8 +69,30 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
             @Override
             public void onFailure(String error) {
-                Toast.makeText(ProfileActivity.this, "Failed to load your data", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(ProfileActivity.this,
+                        "Failed to load your data", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setupBottomNavigationView() {
+        bottomNavigationView = findViewById(R.id.bottomNavigationViewProfile);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.itemSearch:
+                        Intent intentSearch = AppService.getSearchIntent(ProfileActivity.this);
+                        startActivity(intentSearch);
+                        break;
+                    case R.id.itemUpload:
+                        Intent intentUpload = AppService.getUploadIntent(ProfileActivity.this);
+                        startActivity(intentUpload);
+                        break;
+                    case R.id.itemProfile:
+                        break;
+                }
+                return false;
             }
         });
     }
@@ -78,12 +106,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         FirebaseAuthService.getInstance().updateNameAndEmail(name, email, password, new Callback() {
             @Override
             public void onSuccess() {
-                Toast.makeText(ProfileActivity.this, "Update Succeeded", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this,
+                        "Update Succeeded", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure() {
-                Toast.makeText(ProfileActivity.this, "Update Failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ProfileActivity.this,
+                        "Update Failed", Toast.LENGTH_SHORT).show();
             }
         });
     }

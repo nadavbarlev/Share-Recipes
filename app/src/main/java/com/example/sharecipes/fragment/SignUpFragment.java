@@ -20,6 +20,7 @@ import com.example.sharecipes.R;
 import com.example.sharecipes.activity.RecipeListActivity;
 import com.example.sharecipes.firebase.FirebaseAuthService;
 import com.example.sharecipes.firebase.FirebaseDatabaseService;
+import com.example.sharecipes.util.callback.GenericCallback;
 import com.example.sharecipes.util.ui.HorizontalDottedProgress;
 
 
@@ -68,7 +69,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
         showProgressBar(true);
 
         // Sign Out
-        FirebaseAuthService.getInstance().signUp(email, password, new FirebaseAuthListener() {
+        FirebaseAuthService.getInstance().signUp(email, password, new GenericCallback<String, String>() {
             @Override
             public void onSuccess(String userID) {
                 String path = String.format("users/%s", userID);

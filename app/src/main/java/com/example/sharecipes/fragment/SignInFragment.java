@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.sharecipes.R;
 import com.example.sharecipes.activity.RecipeListActivity;
 import com.example.sharecipes.firebase.FirebaseAuthService;
+import com.example.sharecipes.util.callback.GenericCallback;
 import com.example.sharecipes.util.ui.HorizontalDottedProgress;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -84,7 +85,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
        showProgressBar(true);
 
         // Sign In
-        FirebaseAuthService.getInstance().signIn(email, password, new FirebaseAuthListener() {
+        FirebaseAuthService.getInstance().signIn(email, password, new GenericCallback<String, String>() {
             @Override
             public void onSuccess(String userID) {
                 showProgressBar(false);
