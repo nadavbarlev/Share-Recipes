@@ -12,8 +12,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 public abstract class BaseActivity extends AppCompatActivity {
 
     /* Data Members */
-    private ConstraintLayout         mConstraintLayout;
-    private FrameLayout              mFrameLayout;
+    private ConstraintLayout mConstraintLayout;
+    private FrameLayout mFrameLayout;
     private HorizontalDottedProgress mProgressBar;
 
     /* Override Methods*/
@@ -21,7 +21,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void setContentView(int layoutResID) {
 
         /* Gets Views */
-        mConstraintLayout = (ConstraintLayout)getLayoutInflater().inflate(R.layout.activity_base, null);
+        mConstraintLayout = (ConstraintLayout) getLayoutInflater().inflate(R.layout.activity_base, null);
         mFrameLayout = mConstraintLayout.findViewById(R.id.activity_content);
         mProgressBar = mConstraintLayout.findViewById(R.id.progress_bar);
 
@@ -33,7 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /* Methods */
     public void showProgressBar(boolean visibility) {
-        mProgressBar.clearAnimation();
+        // mProgressBar.clearAnimation();
         mProgressBar.setVisibility(visibility ? View.VISIBLE : View.INVISIBLE);
     }
 
