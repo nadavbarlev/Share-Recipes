@@ -37,9 +37,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         mProgressBar.setVisibility(visibility ? View.VISIBLE : View.INVISIBLE);
     }
 
-    // TODO: Color icons at Tab bar
-    // TODO: Intent at Tab bar
-    // TODO: Show Progress bar
-    // TODO: Read data firebase
-    // TODO: Merge firebase data and API data
+
+    // TODO: 1. Read data firebase
+    // TODO: 2. Merge firebase data and API data
+    // TODO: 3. Color icons at Tab bar
+    // TODO: 4. Show Progress bar
+    // TODO: 5. Intent at Tab bar
 }
