@@ -17,7 +17,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="55dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -109,13 +110,12 @@
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:id="@+id/bottomNavigationViewProfile"
         android:background="@drawable/white_gray_border_top"
         android:layout_gravity="bottom"
         app:itemIconTint="@color/bottom_navigation_color"
         app:itemTextColor="@color/bottom_navigation_color"
-        app:menu="@menu/bottom_navigation_menu"
-        android:padding="2dp" />
+        app:menu="@menu/bottom_navigation_menu" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

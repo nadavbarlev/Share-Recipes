@@ -33,14 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /* Methods */
     public void showProgressBar(boolean visibility) {
-        // mProgressBar.clearAnimation();
+        mProgressBar.clearAnimation();
         mProgressBar.setVisibility(visibility ? View.VISIBLE : View.INVISIBLE);
     }
-
-    // 0. Change Github user
-    // 1. Read data firebase
-    // 2. Merge firebase data and food2fork data
-    // 2.1 Stop activity animation
-    // 3. Icons color at Tab bar
-    // TODO: 4. Show Progress bar in base activity
 }
