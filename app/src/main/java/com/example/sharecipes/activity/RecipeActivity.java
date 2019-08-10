@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.sharecipes.R;
+import com.example.sharecipes.firebase.FirebaseAuthService;
 import com.example.sharecipes.firebase.FirebaseDatabaseService;
 import com.example.sharecipes.model.Recipe;
 import com.example.sharecipes.util.callback.GenericCallback;
@@ -68,6 +69,19 @@ public class RecipeActivity extends BaseActivity {
 
     private void setupButtonDelete() {
 
+        // Button Visibility
+        String currUserID = FirebaseAuthService.getInstance().getUserID();
+        if (!mRecipe.getRecipe_id().equals(currUserID)) {
+            mButtonDelete.setVisibility(View.GONE);
+        }
+
+        // Button Events
+        mButtonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private void setViewsProperties(Recipe recipe) {
@@ -102,32 +116,6 @@ public class RecipeActivity extends BaseActivity {
 
     private void getIncomingIntent() {
 
-        /* Gets recipe from Firebase
-        if (getIntent().hasExtra("recipeID")) {
-            final String recipeID = getIntent().getStringExtra("recipeID");
-            String path = String.format("recipes/%s", recipeID);
-            FirebaseDatabaseService.getInstance().getValues(path, new GenericCallback<Map<String, String>, String>() {
-                @Override
-                public void onSuccess(Map<String, String> value) {
-
-                    String publisher = value.get("publisher");
-                    String title = value.get("title");
-                    String[] ingredients = value.get("ingredients").split("\n");
-                    String imageURI = value.get("uri");
-
-                    Recipe recipe = new Recipe(recipeID, title, publisher, ingredients, 100, imageURI,0);
-                    setViewsProperties(recipe);
-                }
-
-                @Override
-                public void onFailure(String error) {
-
-                }
-            });
-        }
-        */
-
-        // Gets recipe from FOOD2FROK
         if (getIntent().hasExtra("recipe")) {
             mRecipe = getIntent().getParcelableExtra("recipe");
             mRecipeVM.searchRecipeBy(mRecipe.getRecipe_id()).observe(this, new Observer<Resource<Recipe>>() {
@@ -139,7 +127,11 @@ public class RecipeActivity extends BaseActivity {
                             showProgressBar(true);
                             break;
                         case ERROR:
-                            showErrorScreen(recipeResource.message);
+                            if (recipeResource.data != null) {
+                                setViewsProperties(recipeResource.data);
+                            } else {
+                                showErrorScreen(recipeResource.message);
+                            }
                             break;
                         case SUCCESS:
                             setViewsProperties(recipeResource.data);

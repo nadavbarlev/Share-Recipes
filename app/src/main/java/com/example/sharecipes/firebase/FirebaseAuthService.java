@@ -89,12 +89,26 @@ public class FirebaseAuthService {
                                         if (task.isSuccessful()) {
 
                                             /* Update name */
-                                            String path = String.format("users/%s", getUserID());
-                                            FirebaseDatabaseService.getInstance().setValue(path, newName);
+                                            String pathUsers = String.format("users/%s", getUserID());
+                                            FirebaseDatabaseService.getInstance().setValue(pathUsers, newName);
 
-                                            callback.onSuccess();
+                                            // Update all current user's recipe
+                                            String userID = FirebaseAuthService.getInstance().getUserID();
+                                            String pathRecipes = String.format("recipes");
+                                            FirebaseDatabaseService.getInstance()
+                                                    .update(pathRecipes, "user_id", userID, "publisher", newName, new Callback() {
+                                                        @Override
+                                                        public void onSuccess() {
+                                                            callback.onSuccess();
+                                                        }
+
+                                                        @Override
+                                                        public void onFailure() {
+                                                            callback.onFailure();
+                                                        }
+                                                    });
                                         } else {
-                                            callback.onFailure();
+                                           callback.onFailure();
                                         }
                                     }
                                 });

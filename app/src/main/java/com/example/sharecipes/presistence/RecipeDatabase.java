@@ -29,6 +29,10 @@ public abstract class RecipeDatabase extends RoomDatabase {
         return instance;
     }
 
+    public static RecipeDatabase getInstance() {
+        return instance;
+    }
+
     // Methods
     public abstract RecipeDao getRecipeDao();
 }

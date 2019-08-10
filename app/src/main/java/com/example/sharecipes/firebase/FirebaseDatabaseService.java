@@ -1,5 +1,12 @@
 package com.example.sharecipes.firebase;
 
+import android.content.Context;
+
+import com.example.sharecipes.model.Recipe;
+import com.example.sharecipes.presistence.RecipeDao;
+import com.example.sharecipes.presistence.RecipeDatabase;
+import com.example.sharecipes.util.AppExecutors;
+import com.example.sharecipes.util.callback.Callback;
 import com.example.sharecipes.util.callback.GenericCallback;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -61,7 +68,7 @@ public class FirebaseDatabaseService {
     /* Generic Getters */
     public void getValue(String path, final GenericCallback<String, String> listener) {
 
-        mDatabase.getReference().child(path).addValueEventListener(new ValueEventListener() {
+        mDatabase.getReference().child(path).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 listener.onSuccess(dataSnapshot.getValue().toString());
@@ -100,7 +107,6 @@ public class FirebaseDatabaseService {
 
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
                             Map<String, String> values = (Map<String, String>)child.getValue();
-                            values.put("key", child.getKey());
                             listener.onSuccess(values);
                         }
                     }
@@ -110,6 +116,55 @@ public class FirebaseDatabaseService {
                         listener.onFailure(databaseError.getMessage());
                     }
                 });
+    }
+
+    /* Update */
+    public void update(final String path, final String whereField, final String whereValue,
+                       final String toChangeField , final String toChangeValue, final Callback callback) {
+
+       mDatabase.getReference().child(path).addListenerForSingleValueEvent(new ValueEventListener() {
+           @Override
+           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+               // Gets Keys and Value
+               Map<String, Map<String, String>> values = (Map<String, Map<String, String>>)dataSnapshot.getValue();
+
+               // Iterate on all keys
+               for (String key: values.keySet()) {
+
+                   // Get values
+                   Map<String, String> value = values.get(key);
+
+                   // WHERE statement
+                   if (value.get(whereField).equals(whereValue)) {
+
+                       // Update Firebase
+                       mDatabase.getReference().child(path).child(key).child(toChangeField).setValue(toChangeValue);
+
+                       // Update DataBase
+                       value.put(toChangeField, toChangeValue);
+                       final Recipe recipe = Recipe.toRecipe(value);
+
+                       AppExecutors.getInstance().background().execute(new Runnable() {
+                           @Override
+                           public void run() {
+                               RecipeDatabase.getInstance().getRecipeDao().updateRecipe(recipe.getRecipe_id(),
+                                       recipe.getTitle(), recipe.getPublisher(), recipe.getSocial_rank(), recipe.getImage_url());
+                           }
+                       });
+                   }
+
+               }
+
+               callback.onSuccess();
+           }
+
+           @Override
+           public void onCancelled(@NonNull DatabaseError databaseError) {
+               callback.onFailure();
+           }
+       });
+
     }
 
 
