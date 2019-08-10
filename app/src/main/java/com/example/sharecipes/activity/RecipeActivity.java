@@ -1,5 +1,6 @@
 package com.example.sharecipes.activity;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +11,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.sharecipes.R;
+import com.example.sharecipes.firebase.FirebaseDatabaseService;
 import com.example.sharecipes.model.Recipe;
+import com.example.sharecipes.util.callback.GenericCallback;
 import com.example.sharecipes.util.network.Resource;
 import com.example.sharecipes.viewmodel.RecipeVM;
+
+import java.util.Map;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
@@ -88,7 +93,33 @@ public class RecipeActivity extends BaseActivity {
     }
 
     private void getIncomingIntent() {
-        if (getIntent().hasExtra("recipe")) {
+
+        // Gets recipe from Firebase
+        if (getIntent().hasExtra("recipeID")) {
+            final String recipeID = getIntent().getStringExtra("recipeID");
+            String path = String.format("recipes/%s", recipeID);
+            FirebaseDatabaseService.getInstance().getValues(path, new GenericCallback<Map<String, String>, String>() {
+                @Override
+                public void onSuccess(Map<String, String> value) {
+
+                    String publisher = value.get("publisher");
+                    String title = value.get("title");
+                    String[] ingredients = value.get("ingredients").split("\n");
+                    String imageURI = value.get("uri");
+
+                    Recipe recipe = new Recipe(recipeID, title, publisher, ingredients, 100, imageURI,0);
+                    setViewsProperties(recipe);
+                }
+
+                @Override
+                public void onFailure(String error) {
+
+                }
+            });
+        }
+
+        // Gets recipe from FOOD2FROK
+        else if (getIntent().hasExtra("recipe")) {
             mRecipe = getIntent().getParcelableExtra("recipe");
             mRecipeVM.searchRecipeBy(mRecipe.getRecipe_id()).observe(this, new Observer<Resource<Recipe>>() {
                 @Override
