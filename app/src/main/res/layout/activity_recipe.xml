@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/scrollViewRecipeDetails"
-    android:visibility="gone">
+    android:visibility="visible">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -68,6 +68,19 @@
             android:padding="7dp">
 
         </LinearLayout>
+
+        <Button
+            android:id="@+id/buttonDelete"
+            style="@style/AppTheme.RoundedCornerMaterialButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="8dp"
+            android:layout_below="@id/linearLayout_ingredients_container"
+            android:fontFamily="sans-serif-condensed"
+            android:text="@string/delete"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 

@@ -14,6 +14,7 @@ import com.example.sharecipes.util.Constants;
 import com.example.sharecipes.util.callback.GenericCallback;
 import com.example.sharecipes.util.network.ApiResponse;
 import com.example.sharecipes.util.network.NetworkBoundResource;
+import com.example.sharecipes.util.network.NetworkHelper;
 import com.example.sharecipes.util.network.Resource;
 
 import java.util.List;
@@ -31,9 +32,11 @@ public class RecipeRepo {
 
     /* Data Members */
     private RecipeDao recipeDao;
+    private Context mContext;
 
     /* Constructor */
     private RecipeRepo(Context context) {
+        mContext = context;
         recipeDao = RecipeDatabase.getInstance(context).getRecipeDao();
     }
 
@@ -125,15 +128,21 @@ public class RecipeRepo {
 
             @Override
             protected boolean shouldFetch(@Nullable Recipe data) {
+
+                Boolean isNetworkAvailable = NetworkHelper.isNetworkAvailable(mContext);
+
                 int currentTime = (int)System.currentTimeMillis() / 1000;
                 int lastRecipeUpdateTime = data.getTimestamp();
-                return currentTime - lastRecipeUpdateTime > Constants.RECIPE_REFRESH_TIME;
+                Boolean isTimeExpired = currentTime - lastRecipeUpdateTime > Constants.RECIPE_REFRESH_TIME;
+
+                return isNetworkAvailable && isTimeExpired;
             }
 
             @NonNull
             @Override
             protected LiveData<Recipe> loadFromDb() {
-                return recipeDao.getRecipe(recipeID);
+                LiveData<Recipe> recipe = recipeDao.getRecipe(recipeID);
+                return recipe;
             }
 
             @NonNull

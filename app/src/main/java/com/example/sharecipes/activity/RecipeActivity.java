@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ public class RecipeActivity extends BaseActivity {
     private TextView mTextViewTitle;
     private TextView mTextViewScore;
     private LinearLayout mLinearLayoutIngredientsContainer;
+    private Button mButtonDelete;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,9 +52,11 @@ public class RecipeActivity extends BaseActivity {
         mTextViewTitle = findViewById(R.id.textView_recipe_title);
         mTextViewScore = findViewById(R.id.textView_recipe_score);
         mLinearLayoutIngredientsContainer = findViewById(R.id.linearLayout_ingredients_container);
+        mButtonDelete = findViewById(R.id.buttonDelete);
 
         showProgressBar(true);
 
+        setupButtonDelete();
         setupViewModel();
         getIncomingIntent();
     }
@@ -60,6 +64,10 @@ public class RecipeActivity extends BaseActivity {
     /* Private Methods */
     private void setupViewModel() {
         mRecipeVM = ViewModelProviders.of(this).get(RecipeVM.class);
+    }
+
+    private void setupButtonDelete() {
+
     }
 
     private void setViewsProperties(Recipe recipe) {
@@ -94,7 +102,7 @@ public class RecipeActivity extends BaseActivity {
 
     private void getIncomingIntent() {
 
-        // Gets recipe from Firebase
+        /* Gets recipe from Firebase
         if (getIntent().hasExtra("recipeID")) {
             final String recipeID = getIntent().getStringExtra("recipeID");
             String path = String.format("recipes/%s", recipeID);
@@ -117,9 +125,10 @@ public class RecipeActivity extends BaseActivity {
                 }
             });
         }
+        */
 
         // Gets recipe from FOOD2FROK
-        else if (getIntent().hasExtra("recipe")) {
+        if (getIntent().hasExtra("recipe")) {
             mRecipe = getIntent().getParcelableExtra("recipe");
             mRecipeVM.searchRecipeBy(mRecipe.getRecipe_id()).observe(this, new Observer<Resource<Recipe>>() {
                 @Override
