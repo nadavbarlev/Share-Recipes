@@ -17,6 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Map;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 
 public class FirebaseDatabaseService {
@@ -107,6 +108,7 @@ public class FirebaseDatabaseService {
 
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
                             Map<String, String> values = (Map<String, String>)child.getValue();
+                            values.put("key", child.getKey());
                             listener.onSuccess(values);
                         }
                     }
@@ -164,8 +166,19 @@ public class FirebaseDatabaseService {
                callback.onFailure();
            }
        });
-
     }
 
-
+    /* Delete */
+    public void delete(String path, final GenericCallback<Void, String> callback) {
+        mDatabase.getReference().child(path).removeValue(new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                if (databaseError == null) {
+                    callback.onSuccess(null);
+                    return;
+                }
+                callback.onFailure(databaseError.getMessage());
+            }
+        });
+    }
 }

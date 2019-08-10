@@ -9,7 +9,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-@Database(entities = {Recipe.class}, version = 1)
+@Database(entities = {Recipe.class}, version = 2)
 @TypeConverters({RecipeConverter.class})
 public abstract class RecipeDatabase extends RoomDatabase {
 

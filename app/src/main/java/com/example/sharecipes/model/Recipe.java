@@ -38,11 +38,14 @@ public class Recipe implements Parcelable {
     @ColumnInfo(name = "timestamp")
     private int timestamp;
 
+    @ColumnInfo(name = "user_id")
+    private String user_id;
+
     /* Constructors */
     public Recipe() {}
 
     public Recipe(String recipe_id, String title, String publisher, String[] ingredients,
-                  float social_rank, String image_url, int timestamp) {
+                  float social_rank, String image_url, int timestamp, String user_id) {
         this.recipe_id = recipe_id;
         this.title = title;
         this.publisher = publisher;
@@ -50,6 +53,7 @@ public class Recipe implements Parcelable {
         this.social_rank = social_rank;
         this.image_url = image_url;
         this.timestamp = timestamp;
+        this.user_id = user_id;
     }
 
     protected Recipe(Parcel in) {
@@ -60,6 +64,7 @@ public class Recipe implements Parcelable {
         social_rank = in.readFloat();
         image_url = in.readString();
         timestamp = in.readInt();
+        user_id = in.readString();
     }
 
     /* Getter and Setter */
@@ -77,6 +82,8 @@ public class Recipe implements Parcelable {
 
     public int getTimestamp() { return timestamp; }
 
+    public String getUser_id() { return user_id; }
+
     public void setRecipe_id(String recipe_id) { this.recipe_id = recipe_id; }
 
     public void setTitle(String title) { this.title = title; }
@@ -91,6 +98,8 @@ public class Recipe implements Parcelable {
 
     public void setTimestamp(int timestamp) {  this.timestamp = timestamp; }
 
+    public void setUser_id(String user_id) {  this.user_id = user_id; }
+
     /* Override Methods */
     @Override
     public String toString() {
@@ -102,6 +111,7 @@ public class Recipe implements Parcelable {
                 ", social_rank=" + social_rank +
                 ", image_url='" + image_url + '\'' +
                 ", timestamp=" + timestamp +
+                ", timestamp=" + user_id +
                 '}';
     }
 
@@ -133,6 +143,7 @@ public class Recipe implements Parcelable {
         dest.writeFloat(social_rank);
         dest.writeString(image_url);
         dest.writeInt(timestamp);
+        dest.writeString(user_id);
     }
 
     /* Converter */
@@ -141,7 +152,9 @@ public class Recipe implements Parcelable {
         String publisher = mapRecipe.get("publisher");
         String[] ingredients = mapRecipe.get("ingredients").split("\n");
         String image_url = mapRecipe.get("uri");
-        String recipeID = mapRecipe.get("user_id");
-        return new Recipe(recipeID, title, publisher, ingredients, 100, image_url, 0);
+        String user_id = mapRecipe.get("user_id");
+        String recipeID = mapRecipe.get("key");
+
+        return new Recipe(recipeID, title, publisher, ingredients, 100, image_url, 0, user_id);
     }
 }

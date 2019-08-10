@@ -6,6 +6,7 @@ import java.util.List;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
@@ -20,6 +21,9 @@ public interface RecipeDao {
 
     @Insert(onConflict = REPLACE)
     void insertRecipe(Recipe recipe);
+
+    @Delete
+    void deleteRecipe(Recipe recipe);
 
     @Query("UPDATE recipes SET title = :title, publisher = :publisher, image_url = :image_url, " +
             "social_rank = :social_rank WHERE recipe_id = :recipe_id")

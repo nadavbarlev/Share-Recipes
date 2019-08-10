@@ -109,6 +109,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         FirebaseAuthService.getInstance().updateNameAndEmail(name, email, password, new Callback() {
             @Override
             public void onSuccess() {
+
+                editTextPassword.setText("");
                 Toast.makeText(ProfileActivity.this,
                         "Update Succeeded", Toast.LENGTH_SHORT).show();
             }

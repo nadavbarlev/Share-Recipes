@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -57,9 +58,9 @@ public class RecipeActivity extends BaseActivity {
 
         showProgressBar(true);
 
-        setupButtonDelete();
         setupViewModel();
         getIncomingIntent();
+        setupButtonDelete();
     }
 
     /* Private Methods */
@@ -71,7 +72,7 @@ public class RecipeActivity extends BaseActivity {
 
         // Button Visibility
         String currUserID = FirebaseAuthService.getInstance().getUserID();
-        if (!mRecipe.getRecipe_id().equals(currUserID)) {
+        if (mRecipe.getUser_id() == null || !mRecipe.getUser_id().equals(currUserID)) {
             mButtonDelete.setVisibility(View.GONE);
         }
 
@@ -80,6 +81,19 @@ public class RecipeActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
 
+                mRecipeVM.deleteRecipe(mRecipe, new GenericCallback<Void, String>() {
+                    @Override
+                    public void onSuccess(Void value) {
+                        Toast.makeText(RecipeActivity.this,
+                                "Recipe deleted successfully", Toast.LENGTH_SHORT).show();
+                        onBackPressed();
+                    }
+
+                    @Override
+                    public void onFailure(String error) {
+                        Toast.makeText(RecipeActivity.this, error, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }

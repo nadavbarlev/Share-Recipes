@@ -85,7 +85,7 @@ public class RecipeRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             case LOADING_TYPE:
                 return 1;
             case EXHAUSTED_TYPE:
-                return mRecipes.size() + 1; //TODO: Check
+                return mRecipes.size() + 1; // TODO: Check
             case CATEGORY_TYPE:
                 return Constants.DEFAULT_SEARCH_CATEGORIES.length;
             default:

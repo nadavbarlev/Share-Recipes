@@ -106,7 +106,6 @@ public class UploadActivity extends BaseActivity implements View.OnClickListener
                         // Get recipe details
                         Map<String, String> dicRecipe = new HashMap<String, String>();
 
-                        // TODO:
                         dicRecipe.put("user_id", FirebaseAuthService.getInstance().getUserID());
                         dicRecipe.put("title", title);
                         dicRecipe.put("publisher", publisher);

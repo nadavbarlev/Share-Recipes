@@ -175,7 +175,7 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
 
                 if (mRecipeListVM.getViewState().getValue() == RecipeListVM.ViewState.RECIPES &&
                   !mRecyclerView.canScrollVertically(1)) {
-                  //  mRecipeListVM.searchNextPage();
+                    mRecipeListVM.searchNextPage();
                 }
             }
         });
