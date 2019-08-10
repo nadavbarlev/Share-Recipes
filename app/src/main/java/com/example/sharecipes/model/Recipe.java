@@ -139,8 +139,9 @@ public class Recipe implements Parcelable {
     public static Recipe toRecipe(Map<String, String> mapRecipe) {
         String title = mapRecipe.get("title");
         String publisher = mapRecipe.get("publisher");
-        String ingredients = mapRecipe.get("ingredients");
-        String image_url = mapRecipe.get("imageUri");
-        return new Recipe("1", title, publisher, ingredients.split("\n"), 0, image_url, 0);
+        String[] ingredients = mapRecipe.get("ingredients").split("\n");
+        String image_url = mapRecipe.get("uri");
+        String recipeID = mapRecipe.get("key");
+        return new Recipe(recipeID, title, publisher, ingredients, 0, image_url, 0);
     }
 }

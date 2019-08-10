@@ -15,11 +15,14 @@ import com.example.sharecipes.adapter.RecipeViewHolder;
 import com.example.sharecipes.firebase.FirebaseAuthService;
 import com.example.sharecipes.model.Recipe;
 import com.example.sharecipes.util.AppService;
+import com.example.sharecipes.util.callback.GenericCallback;
+import com.example.sharecipes.util.network.NetworkHelper;
 import com.example.sharecipes.util.network.Resource;
 import com.example.sharecipes.util.ui.VerticalSpacingItemDecorator;
 import com.example.sharecipes.viewmodel.RecipeListVM;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -39,6 +42,10 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
     /* Data Members */
     private RecipeListVM mRecipeListVM;
     private RecipeRecyclerAdapter mAdapter;
+
+    private String mQuery;
+    private List<Recipe> mRecipes;
+    private Boolean mShouldFetchFromFB;
 
     /* Views */
     private BottomNavigationView mBottomNavigationView;
@@ -61,6 +68,9 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
 
         /* Setup Toolbar */
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
+
+        mRecipes = new ArrayList<>();
+        mShouldFetchFromFB = true;
     }
 
     /* Methods */
@@ -95,30 +105,34 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
                         break;
                     case ERROR:
                         mAdapter.setRecipes(listResource.data);
-                        Toast.makeText(RecipeListActivity.this, listResource.message,Toast.LENGTH_SHORT).show();
+                        /* Toast.makeText(RecipeListActivity.this, listResource.message,Toast.LENGTH_SHORT).show(); */
                         if (listResource.message.equals(RecipeListVM.QUERY_EXHAUSTED)) {
                             mAdapter.setExhausted();
                         }
                         break;
                     case SUCCESS:
 
-                        mAdapter.setRecipes(listResource.data);
+                        // Recipes from NETWORK and DATABASE
+                        mRecipes = listResource.data;
+                        mAdapter.setRecipes(mRecipes);
 
-                        /*
-                        FirebaseDatabaseService.getInstance().getValue("nadav", new FirebaseDatabaseListenerSingleValue() {
-                            @Override
-                            public void onSuccess(Map<String, String> mapRecipe) {
-                               Recipe recipe = Recipe.toRecipe(mapRecipe);
-                               listResource.data.add(0, recipe);
-                               mAdapter.setRecipes(listResource.data);
-                            }
+                        // Recipes from FIREBASE
+                        if (mShouldFetchFromFB && NetworkHelper.isNetworkAvailable(RecipeListActivity.this)) {
+                            mShouldFetchFromFB = false;
 
-                            @Override
-                            public void onFailure() {
+                            mRecipeListVM.getRecipesFB(mQuery, new GenericCallback<Recipe, String>() {
+                                @Override
+                                public void onSuccess(final Recipe value) {
+                                    if (!isRecipeExist(value)) {
+                                        mRecipes.add(0, value);
+                                        mAdapter.setRecipes(mRecipes);
+                                    }
+                                }
 
-                            }
-                        });
-                        */
+                                @Override
+                                public void onFailure(String error) {}
+                            });
+                        }
 
                         break;
                 }
@@ -128,6 +142,7 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
 
     private void setupBottomNavigationView() {
         mBottomNavigationView = findViewById(R.id.bottomNavigationViewRecipeList);
+        mBottomNavigationView.getMenu().getItem(0).setChecked(true);
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -137,10 +152,12 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
                     case R.id.itemUpload:
                         Intent intentUpload = AppService.getUploadIntent(RecipeListActivity.this);
                         startActivity(intentUpload);
+                         RecipeListActivity.this.overridePendingTransition(0, 0);
                         break;
                     case R.id.itemProfile:
                         Intent intentProfile = AppService.getProfileIntent(RecipeListActivity.this);
                         startActivity(intentProfile);
+                        RecipeListActivity.this.overridePendingTransition(0, 0);
                         break;
                 }
                 return false;
@@ -157,8 +174,8 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
 
                 if (mRecipeListVM.getViewState().getValue() == RecipeListVM.ViewState.RECIPES &&
-                    !mRecyclerView.canScrollVertically(1)) {
-                    mRecipeListVM.searchNextPage();
+                  !mRecyclerView.canScrollVertically(1)) {
+                  //  mRecipeListVM.searchNextPage();
                 }
             }
         });
@@ -172,9 +189,21 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+
+                // Scroll to top
                 mRecyclerView.smoothScrollToPosition(0);
+
+                // Search for recipes
                 mRecipeListVM.searchRecipe(s, 1);
+
+                // Clear focus (for back button)
                 mSearchView.clearFocus();
+
+                // Init search members values
+                mQuery = s;
+                mShouldFetchFromFB = true;
+                mRecipes.clear();
+
                 return false;
             }
 
@@ -189,6 +218,15 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
                 .error(R.drawable.white_background);
         return Glide.with(this)
                 .setDefaultRequestOptions(requestOptions);
+    }
+
+    private boolean isRecipeExist(Recipe recipe) {
+        for (Recipe curr : mRecipes) {
+            if (curr.getRecipe_id().equals(recipe.getRecipe_id())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /* Override Methods - Back Button */
@@ -233,6 +271,8 @@ public class RecipeListActivity extends BaseActivity implements RecipeViewHolder
 
     @Override
     public void onCategoryClicked(String category) {
+        mQuery = category;
+        mShouldFetchFromFB = true;
         mRecipeListVM.searchRecipe(category, 1);
     }
 }

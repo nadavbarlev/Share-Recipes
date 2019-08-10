@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -169,6 +170,8 @@ public class UploadActivity extends BaseActivity implements View.OnClickListener
 
     private void setupBottomNavigationView() {
         bottomNavigationView = findViewById(R.id.bottomNavigationViewUpload);
+        bottomNavigationView.getMenu().getItem(1).setChecked(true);
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -176,12 +179,14 @@ public class UploadActivity extends BaseActivity implements View.OnClickListener
                     case R.id.itemSearch:
                         Intent intentSearch = AppService.getSearchIntent(UploadActivity.this);
                         startActivity(intentSearch);
+                        UploadActivity.this.overridePendingTransition(0, 0);
                         break;
                     case R.id.itemUpload:
                         break;
                     case R.id.itemProfile:
                         Intent intentProfile = AppService.getProfileIntent(UploadActivity.this);
                         startActivity(intentProfile);
+                        UploadActivity.this.overridePendingTransition(0, 0);
                         break;
                 }
                 return false;

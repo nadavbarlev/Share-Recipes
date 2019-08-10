@@ -44,6 +44,7 @@ public abstract class NetworkBoundResource<CacheObject, RequestObject> {
                 results.removeSource(cacheFromDB);
 
                 // Fetch from network if needed
+                // TODO: Check if there is network connection
                 if (shouldFetch(cacheObject)) {
                     fetchFromNetwork(cacheFromDB);
                 }
@@ -100,7 +101,8 @@ public abstract class NetworkBoundResource<CacheObject, RequestObject> {
                     AppExecutors.getInstance().main().execute(new Runnable() {
                         @Override
                         public void run() {
-                            results.addSource(loadFromDb(), new Observer<CacheObject>() {
+                            final LiveData<CacheObject> cacheFromDB = loadFromDb();
+                            results.addSource(cacheFromDB, new Observer<CacheObject>() {
                                 @Override
                                 public void onChanged(@Nullable CacheObject cacheObject) {
                                     setValue(Resource.success(cacheObject));

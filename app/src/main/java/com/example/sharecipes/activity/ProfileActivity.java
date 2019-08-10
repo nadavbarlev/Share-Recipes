@@ -77,6 +77,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private void setupBottomNavigationView() {
         bottomNavigationView = findViewById(R.id.bottomNavigationViewProfile);
+        bottomNavigationView.getMenu().getItem(2).setChecked(true);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -84,10 +85,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                     case R.id.itemSearch:
                         Intent intentSearch = AppService.getSearchIntent(ProfileActivity.this);
                         startActivity(intentSearch);
+                        ProfileActivity.this.overridePendingTransition(0, 0);
                         break;
                     case R.id.itemUpload:
                         Intent intentUpload = AppService.getUploadIntent(ProfileActivity.this);
                         startActivity(intentUpload);
+                        ProfileActivity.this.overridePendingTransition(0, 0);
                         break;
                     case R.id.itemProfile:
                         break;

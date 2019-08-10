@@ -2,6 +2,7 @@ package com.example.sharecipes.repository;
 
 import android.content.Context;
 
+import com.example.sharecipes.firebase.FirebaseDatabaseService;
 import com.example.sharecipes.model.Recipe;
 import com.example.sharecipes.presistence.RecipeDao;
 import com.example.sharecipes.presistence.RecipeDatabase;
@@ -10,15 +11,18 @@ import com.example.sharecipes.service.Responses.RecipeSearchResponse;
 import com.example.sharecipes.service.ServiceGenerator;
 import com.example.sharecipes.util.AppExecutors;
 import com.example.sharecipes.util.Constants;
+import com.example.sharecipes.util.callback.GenericCallback;
 import com.example.sharecipes.util.network.ApiResponse;
 import com.example.sharecipes.util.network.NetworkBoundResource;
 import com.example.sharecipes.util.network.Resource;
 
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 
 public class RecipeRepo {
 
@@ -138,5 +142,31 @@ public class RecipeRepo {
                 return ServiceGenerator.getRecipeService().getRecipe(Constants.API_KEY_2, recipeID);
             }
         }.getAsLiveData();
+    }
+
+    public void getRecipesFB(String query, final GenericCallback<Recipe, String> callback) {
+
+        FirebaseDatabaseService.getInstance().contains("recipes", "title", query,
+                new GenericCallback<Map<String, String>, String>() {
+                    @Override
+                    public void onSuccess(Map<String, String> value) {
+                        final Recipe recipe = Recipe.toRecipe(value);
+
+                        AppExecutors.getInstance().background().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                recipeDao.insertRecipe(recipe);
+                            }
+                        });
+
+                        callback.onSuccess(recipe);
+                    }
+
+                    @Override
+                    public void onFailure(String error) {
+                        callback.onFailure(error);
+                    }
+                });
+
     }
 }

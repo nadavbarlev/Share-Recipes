@@ -2,13 +2,16 @@ package com.example.sharecipes.viewmodel;
 
 import android.app.Application;
 
+import com.example.sharecipes.firebase.FirebaseDatabaseService;
 import com.example.sharecipes.model.Recipe;
 import com.example.sharecipes.repository.RecipeRepo;
 import com.example.sharecipes.util.Constants;
+import com.example.sharecipes.util.callback.GenericCallback;
 import com.example.sharecipes.util.network.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -58,7 +61,7 @@ public class RecipeListVM extends AndroidViewModel {
         // Set display state to Recipes
         this.mViewState.setValue(ViewState.RECIPES);
 
-        // Gets async recipes
+        // Gets async Network recipes
         final LiveData<Resource<List<Recipe>>> repoRecipes = mRecipeRepo.searchRecipesApi(mQuery, mPageNumber);
 
         // Observe to recipes getting from server
@@ -85,15 +88,14 @@ public class RecipeListVM extends AndroidViewModel {
                 // Success
                 else if (listResource.status == Resource.Status.SUCCESS) {
                     mIsPerformQuery = false;
+                    mRecipes.removeSource(repoRecipes);
 
                     if (listResource.data == null) {
-                        mRecipes.removeSource(repoRecipes);
                         return;
                     }
 
                     if (listResource.data.size() == 0) {
                         mRecipes.setValue(Resource.error(QUERY_EXHAUSTED, listResource.data));
-                        mRecipes.removeSource(repoRecipes);
                     }
                 }
             }
@@ -141,25 +143,20 @@ public class RecipeListVM extends AndroidViewModel {
         }
     }
 
-    /*
+    public void getRecipesFB(String query, final GenericCallback<Recipe, String> callback) {
 
-    public LiveData<Boolean> getIsQueryExhausted() {
-        return mRecipeRepo.getIsQueryExhausted();
-    }
+        mRecipeRepo.getRecipesFB(query, new GenericCallback<Recipe, String>() {
+            @Override
+            public void onSuccess(Recipe value) {
+                callback.onSuccess(value);
+            }
 
-    public void searchNextPage() {
-        if (!mIsRecipesDisplay || getIsQueryExhausted().getValue()) { return; }
-        mRecipeRepo.searchNextPage();
+            @Override
+            public void onFailure(String error) {
+                callback.onFailure(error);
+            }
+        });
     }
-
-    public void setIsRecipesDisplay(boolean isDisplay) {
-        mIsRecipesDisplay = isDisplay;
-    }
-
-    public boolean isRecipesDisplay() {
-        return mIsRecipesDisplay;
-    }
-    */
 }
 
 
