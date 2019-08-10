@@ -3,8 +3,10 @@ package com.example.sharecipes.firebase;
 import android.net.Uri;
 
 import com.example.sharecipes.util.callback.GenericCallback;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -33,12 +35,17 @@ public class FirebaseStorageService {
     /* Methods */
     public void upload(String path, Uri uri, final GenericCallback<Uri, String> listener) {
 
-        mStorageRef.child(path).putFile(uri)
+        final StorageReference storageRef = mStorageRef.child(path);
+        storageRef.putFile(uri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        Uri downloadUrl = taskSnapshot.getUploadSessionUri();
-                        listener.onSuccess(downloadUrl);
+                        storageRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                listener.onSuccess(task.getResult());
+                            }
+                        });
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

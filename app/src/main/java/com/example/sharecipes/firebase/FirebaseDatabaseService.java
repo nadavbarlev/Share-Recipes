@@ -9,6 +9,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+
 public class FirebaseDatabaseService {
 
     /* Data Members */
@@ -70,4 +73,44 @@ public class FirebaseDatabaseService {
             }
         });
     }
+
+    public void getValues(String path, final GenericCallback<Map<String, String>, String> listener) {
+
+        mDatabase.getReference().child(path).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, String> values = (Map<String, String>)dataSnapshot.getValue();
+                listener.onSuccess(values);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                listener.onFailure(error.getMessage());
+            }
+        });
+    }
+
+    /* Search and Contains */
+    public void contains(String path, String field, String text, final GenericCallback<Map<String, String>, String> listener) {
+
+        mDatabase.getReference().child(path).orderByChild(field).startAt(text).endAt(text+ "\uf8ff")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            Map<String, String> values = (Map<String, String>)child.getValue();
+                            values.put("key", child.getKey());
+                            listener.onSuccess(values);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        listener.onFailure(databaseError.getMessage());
+                    }
+                });
+    }
+
+
 }
