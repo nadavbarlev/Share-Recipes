@@ -124,6 +124,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
 
     private void moveToApp() {
         Intent intent = new Intent(getContext(), RecipeListActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
 
