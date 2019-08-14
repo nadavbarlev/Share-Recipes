@@ -135,7 +135,8 @@ public class RecipeRepo {
                 int lastRecipeUpdateTime = data.getTimestamp();
                 Boolean isTimeExpired = currentTime - lastRecipeUpdateTime > Constants.RECIPE_REFRESH_TIME;
 
-                return isNetworkAvailable && isTimeExpired;
+                // return isNetworkAvailable && isTimeExpired;
+                return true;
             }
 
             @NonNull
@@ -177,5 +178,14 @@ public class RecipeRepo {
                     }
                 });
 
+    }
+
+    public void deleteCache() {
+        AppExecutors.getInstance().background().execute(new Runnable() {
+            @Override
+            public void run() {
+                recipeDao.deleteAll();
+            }
+        });
     }
 }
