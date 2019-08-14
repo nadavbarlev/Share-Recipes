@@ -15,6 +15,9 @@ import android.widget.Toast;
 import com.example.sharecipes.R;
 import com.example.sharecipes.firebase.FirebaseAuthService;
 import com.example.sharecipes.firebase.FirebaseDatabaseService;
+import com.example.sharecipes.presistence.RecipeDao;
+import com.example.sharecipes.presistence.RecipeDatabase;
+import com.example.sharecipes.repository.RecipeRepo;
 import com.example.sharecipes.util.AppService;
 import com.example.sharecipes.util.callback.Callback;
 import com.example.sharecipes.util.callback.GenericCallback;
@@ -32,6 +35,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private HorizontalDottedProgress progressBar;
     private BottomNavigationView bottomNavigationView;
 
+    /* Data Members */
+    private RecipeDao recipeDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +52,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         progressBar = findViewById(R.id.progressBarProfile);
         bottomNavigationView = findViewById(R.id.bottomNavigationViewProfile);
 
+        /* Data Members */
+        recipeDao = RecipeDatabase.getInstance().getRecipeDao();
+
         /* Events */
         buttonSave.setOnClickListener(this);
         buttonSignOut.setOnClickListener(this);
@@ -57,6 +66,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     /* Private Methods */
     private void setupViews() {
 
+        showProgressBar(true);
+
         // Get Username
         FirebaseDatabaseService.getInstance().getUsername(new GenericCallback<String, String>() {
             @Override
@@ -65,10 +76,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 // Set views
                 editTextEmail.setText(FirebaseAuthService.getInstance().getUserEmail());
                 editTextName.setText(value);
+                showProgressBar(false);
             }
 
             @Override
             public void onFailure(String error) {
+                showProgressBar(false);
                 Toast.makeText(ProfileActivity.this,
                         "Failed to load your data", Toast.LENGTH_SHORT).show();
             }
@@ -104,12 +117,15 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         if (!validate()) { return; }
 
+        showProgressBar(true);
+
         String password = editTextPassword.getText().toString();
 
         FirebaseAuthService.getInstance().updateNameAndEmail(name, email, password, new Callback() {
             @Override
             public void onSuccess() {
 
+                showProgressBar(false);
                 editTextPassword.setText("");
                 Toast.makeText(ProfileActivity.this,
                         "Update Succeeded", Toast.LENGTH_SHORT).show();
@@ -117,6 +133,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
             @Override
             public void onFailure() {
+
+                showProgressBar(false);
                 Toast.makeText(ProfileActivity.this,
                         "Update Failed", Toast.LENGTH_SHORT).show();
             }
@@ -125,8 +143,13 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     private void signOut() {
 
+        showProgressBar(true);
+
         // Sign Out
         FirebaseAuthService.getInstance().SignOut();
+
+        // Remove cache data
+        RecipeRepo.getInstance(ProfileActivity.this).deleteCache();
 
         // Move to Login screen
         Intent intent = new Intent(this, LoginActivity.class);
@@ -162,6 +185,11 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         return isValid;
+    }
+
+    private void showProgressBar(Boolean visibility) {
+        progressBar.clearAnimation();
+        progressBar.setVisibility( visibility ? View.VISIBLE : View.INVISIBLE);
     }
 
     /* Implement View.OnClickListener */

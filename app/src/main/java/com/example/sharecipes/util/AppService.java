@@ -1,5 +1,6 @@
 package com.example.sharecipes.util;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 
@@ -7,7 +8,7 @@ import com.example.sharecipes.activity.ProfileActivity;
 import com.example.sharecipes.activity.RecipeListActivity;
 import com.example.sharecipes.activity.UploadActivity;
 
-public class AppService {
+public class AppService extends Application {
 
     /* Data Members */
     private static Intent intentSearch;

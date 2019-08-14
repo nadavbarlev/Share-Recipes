@@ -25,6 +25,9 @@ public interface RecipeDao {
     @Delete
     void deleteRecipe(Recipe recipe);
 
+    @Query("Delete from recipes")
+    void deleteAll();
+
     @Query("UPDATE recipes SET title = :title, publisher = :publisher, image_url = :image_url, " +
             "social_rank = :social_rank WHERE recipe_id = :recipe_id")
     void updateRecipe(String recipe_id, String title, String publisher, float social_rank, String image_url);
