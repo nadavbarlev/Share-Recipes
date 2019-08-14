@@ -101,7 +101,7 @@ public class RecipeActivity extends BaseActivity {
     private void setViewsProperties(Recipe recipe) {
 
         // Check if post null
-        if (recipe == null) { return; }
+        if (recipe == null || recipe.getIngredients() == null) { return; }
 
         // Set Text Parameters
         mTextViewTitle.setText(recipe.getTitle());
